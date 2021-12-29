@@ -13,22 +13,23 @@
 <meta property="og:site_name" content="ling">
 <meta property="og:description" content="php Xdebug环境搭建linux+vscode+docker环境配置： ​    系统：parrotsec家庭版         ​    审计软件：vscode ​    代码语言：php docker使用dockerfile文件创建镜像 我这里使用的是其他人搭建好的dockerfile文件，如果有其他需要可以自行搭建，同时我把dockerfile内的php版本调整为7.3了 https:">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124195333240.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124195555821.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124195950790.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124200421022.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124200612631.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124200731180.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124201314076.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124201422718.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124201504969.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211126090424022.png">
-<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211126090817693.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/1CBG2YQqj98wp4b.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/FrxlVnC1JcESQh6.png">
+<meta property="og:image" content="f:/abz/wiki/PHP/img/image-20211124195950790.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/3YLuGhlR9Iw6po7.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/czbYTqHgMGKjxVw.png">
+<meta property="og:image" content="f:/abz/wiki/PHP/img/image-20211124200731180.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/O5CgsRpkqoVzNa8.png">
+<meta property="og:image" content="f:/abz/wiki/PHP/img/image-20211124201422718.png">
+<meta property="og:image" content="f:/abz/wiki/PHP/img/image-20211124201504969.png">
+<meta property="og:image" content="https://s2.loli.net/2021/12/29/9OnusZAKdpLaXfh.png">
+<meta property="og:image" content="f:/abz/wiki/PHP/img/image-20211126090817693.png">
+<meta property="og:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211213042519264.png">
 <meta property="article:published_time" content="2021-12-25T10:35:30.000Z">
-<meta property="article:modified_time" content="2021-12-25T10:39:05.500Z">
+<meta property="article:modified_time" content="2021-12-29T11:02:03.404Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/12/25/php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/img/image-20211124195333240.png">
+<meta name="twitter:image" content="https://s2.loli.net/2021/12/29/1CBG2YQqj98wp4b.png">
     
     
       
@@ -113,7 +114,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">php Xdebug环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-vscode-docker"><span class="toc-number">1.1.</span> <span class="toc-text">linux+vscode+docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker"><span class="toc-number">1.1.1.</span> <span class="toc-text">docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VSCODE"><span class="toc-number">1.1.2.</span> <span class="toc-text">VSCODE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E7%BB%8F%E9%AA%8C"><span class="toc-number">1.1.4.</span> <span class="toc-text">踩坑经验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.1.5.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpstudy-vscode"><span class="toc-number">1.2.</span> <span class="toc-text">phpstudy+vscode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy"><span class="toc-number">1.2.1.</span> <span class="toc-text">phpstudy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VScode"><span class="toc-number">1.2.2.</span> <span class="toc-text">VScode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">php Xdebug环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-vscode-docker"><span class="toc-number">1.1.</span> <span class="toc-text">linux+vscode+docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker"><span class="toc-number">1.1.1.</span> <span class="toc-text">docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VSCODE"><span class="toc-number">1.1.2.</span> <span class="toc-text">VSCODE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E7%BB%8F%E9%AA%8C"><span class="toc-number">1.1.4.</span> <span class="toc-text">踩坑经验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.1.5.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpstudy-vscode"><span class="toc-number">1.2.</span> <span class="toc-text">phpstudy+vscode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy"><span class="toc-number">1.2.1.</span> <span class="toc-text">phpstudy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VScode"><span class="toc-number">1.2.2.</span> <span class="toc-text">VScode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debug%E6%97%A0%E7%BA%BF%E5%88%B7%E6%96%B0%E7%AC%AC%E4%B8%80%E8%A1%8C"><span class="toc-number">1.3.</span> <span class="toc-text">debug无线刷新第一行</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -163,38 +164,38 @@
 
 
 
-<p><img src="img/image-20211124195333240.png" alt="image-20211124195333240"></p>
+<p><img src="https://s2.loli.net/2021/12/29/1CBG2YQqj98wp4b.png" alt="image-20211124195333240"></p>
 <p><strong>生成容器和映射web目录</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -v /home/yuyan/Desktop/phpcode:/var/www/html -d -p 10086:80 --name php7_xdebug --restart=always 75a7a11b8671</span><br></pre></td></tr></table></figure>
 
-<p><img src="img/image-20211124195555821.png" alt="image-20211124195555821"></p>
+<p><img src="https://s2.loli.net/2021/12/29/FrxlVnC1JcESQh6.png" alt="image-20211124195555821"></p>
 <p><strong>进入docker里调整xdebug.ini</strong></p>
 <p><strong>这里的xdebug.so 和host需要视情况调整，不要盲目抄</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[xdebug]</span><br><span class="line">zend_extension=/usr/<span class="built_in">local</span>/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so</span><br><span class="line">xdebug.remote_enable=1</span><br><span class="line">xdebug.mode = debug</span><br><span class="line">xdebug.client_host=172.17.0.1</span><br><span class="line">xdebug.client_port = 9000</span><br><span class="line">xdebug.remote_autostart = 1</span><br><span class="line">xdebug.start_with_request = yes</span><br><span class="line">xdebug.log=/tmp/xdebug-local.logxdebug.remote_autostart=1</span><br></pre></td></tr></table></figure>
 
-<p><img src="img/image-20211124195950790.png" alt="image-20211124195950790"></p>
+<p><img src="F:/abz/wiki/PHP/img/image-20211124195950790.png" alt="image-20211124195950790"></p>
 <h3 id="VSCODE"><a href="#VSCODE" class="headerlink" title="VSCODE"></a><strong>VSCODE</strong></h3><p>​    <strong>下载vscode</strong></p>
 <p>​    <code>https://code.visualstudio.com/download</code></p>
 <p>​    **下载好vscode之后进入插件市场下载php xdebug **</p>
-<p><img src="img/image-20211124200421022.png" alt="image-20211124200421022"></p>
+<p><img src="https://s2.loli.net/2021/12/29/3YLuGhlR9Iw6po7.png" alt="image-20211124200421022"></p>
 <p><strong>下载完后点击左侧第四个按钮，然后点击上方的小齿轮，进入launch.json</strong></p>
-<p><img src="img/image-20211124200612631.png" alt="image-20211124200612631"></p>
+<p><img src="https://s2.loli.net/2021/12/29/czbYTqHgMGKjxVw.png" alt="image-20211124200612631"></p>
 <p><strong>修改launch.json内容</strong></p>
 <p><strong>端口需要跟docker内的php.ini文件一样设置</strong></p>
 <p><strong>/var/www/html 是指docker内的WEB目录，docker内的目录怎么设置这里就怎么设置</strong></p>
 <p><strong>修改完php.ini启动重启</strong></p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Use IntelliSense to learn about possible attributes.</span></span><br><span class="line">    <span class="comment">// Hover to view descriptions of existing attributes.</span></span><br><span class="line">    <span class="comment">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Listen for XDebug&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;php&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;port&quot;</span>: <span class="number">9000</span>,</span><br><span class="line">            <span class="attr">&quot;hostname&quot;</span>: <span class="string">&quot;172.17.0.1&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;pathMappings&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;/var/www/html/&quot;</span>: <span class="string">&quot;$&#123;workspaceRoot&#125;/&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">           <span class="attr">&quot;log&quot;</span>: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Launch currently open script&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;php&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;program&quot;</span>: <span class="string">&quot;$&#123;file&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;port&quot;</span>: <span class="number">9000</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="img/image-20211124200731180.png" alt="image-20211124200731180"></p>
+<p><img src="F:/abz/wiki/PHP/img/image-20211124200731180.png" alt="image-20211124200731180"></p>
 <h3 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h3><p><strong>安装debug插件</strong></p>
 <p><strong>我这里使用的是xdebug helper</strong></p>
 <p><code>https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/?utm_source=addons.mozilla.org&amp;utm_medium=referral&amp;utm_content=search</code></p>
 <p>**设置ide key **//其实设不设置都一样的</p>
-<p><img src="img/image-20211124201314076.png" alt="image-20211124201314076"></p>
+<p><img src="https://s2.loli.net/2021/12/29/O5CgsRpkqoVzNa8.png" alt="image-20211124201314076"></p>
 <p><strong>这时候进入vscode 按F5开始debug</strong></p>
-<p><img src="img/image-20211124201422718.png" alt="image-20211124201422718"></p>
+<p><img src="F:/abz/wiki/PHP/img/image-20211124201422718.png" alt="image-20211124201422718"></p>
 <p><strong>使用浏览器访问就可以debug了</strong></p>
-<p><img src="img/image-20211124201504969.png" alt="image-20211124201504969"></p>
+<p><img src="F:/abz/wiki/PHP/img/image-20211124201504969.png" alt="image-20211124201504969"></p>
 <h3 id="踩坑经验"><a href="#踩坑经验" class="headerlink" title="踩坑经验"></a><strong>踩坑经验</strong></h3><p>​    如果vscode提示什么说本地没有php或找不到php环境，只能说你配置出问题了，不需要在本地安装一个php</p>
 <p>​    如果断点没断成功看下你的映射目录是否就是docker环境的</p>
 <p>​    不要没有映射就强行加载docker目录，如果你使用vscode加载docker目录（没有映射过的）会断点失败，使用vscode加载目录不需要root权限</p>
@@ -203,7 +204,7 @@
 <p><a target="_blank" rel="noopener" href="https://toggen.com.au/it-tips/xdebug-over-ssh-into-container/">https://toggen.com.au/it-tips/xdebug-over-ssh-into-container/</a></p>
 <h2 id="phpstudy-vscode"><a href="#phpstudy-vscode" class="headerlink" title="phpstudy+vscode"></a>phpstudy+vscode</h2><h3 id="phpstudy"><a href="#phpstudy" class="headerlink" title="phpstudy"></a><strong>phpstudy</strong></h3><p>​    <strong>下载好phpstudy后开启xdebug</strong></p>
 <p>​    <strong>我这里就直接使用默认端口了，有需要可更改</strong></p>
-<p><img src="img/image-20211126090424022.png" alt="image-20211126090424022"></p>
+<p><img src="https://s2.loli.net/2021/12/29/9OnusZAKdpLaXfh.png" alt="image-20211126090424022"></p>
 <p>​    <strong>修改php.ini</strong></p>
 <p>​    <strong>如果弄完后无法断点就需要修改</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xdebug.remote_enable=On   //将默认的off修改为on</span><br><span class="line">xdebug.remote_autostart = On	//这条是需要重新添加的，默认是不存在的</span><br></pre></td></tr></table></figure>
@@ -211,7 +212,7 @@
 
 
 <h3 id="VScode"><a href="#VScode" class="headerlink" title="VScode"></a>VScode</h3><p>​    <strong>进入插件市场下载phpdebug 插件</strong></p>
-<p><img src="img/image-20211126090817693.png" alt="image-20211126090817693"></p>
+<p><img src="F:/abz/wiki/PHP/img/image-20211126090817693.png" alt="image-20211126090817693"></p>
 <p><strong>添加launch.json</strong></p>
 <p><strong>将下面的内容添加到json</strong></p>
 <p><strong>保存完重启phpstudy</strong></p>
@@ -220,6 +221,8 @@
 
 
 <h3 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/113171737">https://zhuanlan.zhihu.com/p/113171737</a></p>
+<h2 id="debug无线刷新第一行"><a href="#debug无线刷新第一行" class="headerlink" title="debug无线刷新第一行"></a>debug无线刷新第一行</h2><p>​    <strong>如果出现debug的时候一直跳回第一行，那么很有可能是因为debug的程序一直发送请求，这时候就需要将浏览器的插件设置为Trace了</strong></p>
+<p><img src="img/image-20211213042519264.png" alt="image-20211213042519264"></p>
 
   </div>
 </article>
@@ -245,7 +248,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">php Xdebug环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-vscode-docker"><span class="toc-number">1.1.</span> <span class="toc-text">linux+vscode+docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker"><span class="toc-number">1.1.1.</span> <span class="toc-text">docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VSCODE"><span class="toc-number">1.1.2.</span> <span class="toc-text">VSCODE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E7%BB%8F%E9%AA%8C"><span class="toc-number">1.1.4.</span> <span class="toc-text">踩坑经验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.1.5.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpstudy-vscode"><span class="toc-number">1.2.</span> <span class="toc-text">phpstudy+vscode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy"><span class="toc-number">1.2.1.</span> <span class="toc-text">phpstudy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VScode"><span class="toc-number">1.2.2.</span> <span class="toc-text">VScode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#php-Xdebug%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">php Xdebug环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-vscode-docker"><span class="toc-number">1.1.</span> <span class="toc-text">linux+vscode+docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker"><span class="toc-number">1.1.1.</span> <span class="toc-text">docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VSCODE"><span class="toc-number">1.1.2.</span> <span class="toc-text">VSCODE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E7%BB%8F%E9%AA%8C"><span class="toc-number">1.1.4.</span> <span class="toc-text">踩坑经验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.1.5.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpstudy-vscode"><span class="toc-number">1.2.</span> <span class="toc-text">phpstudy+vscode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy"><span class="toc-number">1.2.1.</span> <span class="toc-text">phpstudy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VScode"><span class="toc-number">1.2.2.</span> <span class="toc-text">VScode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">参考链接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debug%E6%97%A0%E7%BA%BF%E5%88%B7%E6%96%B0%E7%AC%AC%E4%B8%80%E8%A1%8C"><span class="toc-number">1.3.</span> <span class="toc-text">debug无线刷新第一行</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
