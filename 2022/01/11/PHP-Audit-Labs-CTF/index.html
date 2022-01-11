@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的，推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
+    <meta name="description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP-Audit-Labs-CTF">
 <meta property="og:url" content="http://example.com/2022/01/11/PHP-Audit-Labs-CTF/index.html">
 <meta property="og:site_name" content="ling">
-<meta property="og:description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的，推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
+<meta property="og:description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/9jzcxmK4FO8Eq6v.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/9qhGdvB8gr6ToJL.png">
@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/vkD38WCzTM791pL.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/83FwsfVvTrUSgx6.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/3Hf9mUyINvdplEA.png">
-<meta property="og:image" content="c:/Users/lan/Documents/img/image-20220106062002972.png">
+<meta property="og:image" content="https://s2.loli.net/2022/01/11/SI41ZqQg9e6Rlop.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/iRY8aEPFr7qJnoC.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/RV3MyuY2zBG7o9r.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/uw1eGSWRMpNQO4A.png">
@@ -34,12 +34,12 @@
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/Dp7hjGw2T8uMRkI.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/nH576JOl8kfSQYh.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/Najlwko1hrCPqVs.png">
-<meta property="og:image" content="c:/Users/lan/Documents/img/image-20220109172543751.png">
+<meta property="og:image" content="https://s2.loli.net/2022/01/11/xDsameNY3MkyiwX.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/q72dQiW5JDMhBUw.png">
-<meta property="og:image" content="c:/Users/lan/Documents/img/image-20220109191056735.png">
+<meta property="og:image" content="https://s2.loli.net/2022/01/11/pfhQLmtXinIc4b8.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/yLVFsCqpaxdz9RM.png">
 <meta property="article:published_time" content="2022-01-11T04:52:46.000Z">
-<meta property="article:modified_time" content="2022-01-11T05:00:36.182Z">
+<meta property="article:modified_time" content="2022-01-11T05:08:21.908Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="PHP">
 <meta name="twitter:card" content="summary">
@@ -174,7 +174,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h1 id="PHP-Audit-Labs-CTF"><a href="#PHP-Audit-Labs-CTF" class="headerlink" title="PHP-Audit-Labs-CTF"></a>PHP-Audit-Labs-CTF</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的，推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路</p>
+    <h1 id="PHP-Audit-Labs-CTF"><a href="#PHP-Audit-Labs-CTF" class="headerlink" title="PHP-Audit-Labs-CTF"></a>PHP-Audit-Labs-CTF</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路</p>
 <h2 id="Day1"><a href="#Day1" class="headerlink" title="Day1"></a>Day1</h2><h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h3><p>  <a target="_blank" rel="noopener" href="https://github.com/hongriSec/PHP-Audit-Labs/tree/master/PHP-CTF-Docker/dockerfile_day1/day1">Github地址</a></p>
 <h3 id="解"><a href="#解" class="headerlink" title="解"></a>解</h3><p>  <img src="https://s2.loli.net/2022/01/11/9jzcxmK4FO8Eq6v.png" alt="image-20220111002121397"></p>
 <p><img src="https://s2.loli.net/2022/01/11/9qhGdvB8gr6ToJL.png" alt="image-20220111002103498"></p>
@@ -192,10 +192,16 @@
 
 
 
-<h3 id="解-1"><a href="#解-1" class="headerlink" title="解:"></a>解:</h3><p>需要绕过parse_url和preg_match 两个函数才能执行exec</p>
-<p>parse_url 是以<code>://</code>进行判断，<code>://</code>前面为协议，后面为host</p>
-<p>preg_match则是正则匹配，匹配url结束是否为sec-redclub.com</p>
-<p>现在payload组合：xx:// 系统命令 sec-redclub.com</p>
+<h3 id="解-1"><a href="#解-1" class="headerlink" title="解:"></a>解:</h3><ul>
+<li><p>需要绕过parse_url和preg_match 两个函数才能执行exec</p>
+</li>
+<li><p>parse_url 是以<code>://</code>进行判断，<code>://</code>前面为协议，后面为host</p>
+</li>
+<li><p>preg_match则是正则匹配，匹配url结束是否为sec-redclub.com</p>
+</li>
+<li><p>现在payload组合：xx:// 系统命令 sec-redclub.com</p>
+</li>
+</ul>
 <p><strong>Payload</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">linux:</span><br><span class="line">syst1m://<span class="string">&quot;|ls;&quot;</span>sec-redclub.com</span><br><span class="line">syst1m://<span class="string">&quot;|cat&lt;f1agi3hEre.php;&quot;</span>sec-redclub.com</span><br><span class="line"></span><br><span class="line">windows:</span><br><span class="line">syst1m://%22||dir||;%22sec-redclub.com</span><br><span class="line">syst1m://%22||<span class="built_in">type</span>,f1agi3hEre.php||;%22sec-redclub.com</span><br><span class="line"></span><br><span class="line">; 表示 连续指令</span><br><span class="line">| 表示 管道符左边命令的输出就会作为管道符右边命令的输入,即左边的结果为右边的输入</span><br><span class="line">|| 表示执行第一个命令成功将不执行第二个命令，如果执行第一命令失败将执行第二个命令</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -205,7 +211,8 @@
 
 
 
-<h3 id="解-2"><a href="#解-2" class="headerlink" title="解:"></a>解:</h3><p>  其实我做该题的时候一直在<code>class_exists、sql_autoload_register</code>反复横跳，但是经过查看手册和思考发现<code>sql_autoload_register</code>无法加载<code>flag.php</code>，我的目光又回到<code>class_exists</code>，但是无法绕过<code>class_exists</code>，经过长时间思考也得不到结果，后面上网查询发现可以利用<code>php</code>自带的类进行绕过并读取文件</p>
+<h3 id="解-2"><a href="#解-2" class="headerlink" title="解:"></a>解:</h3><p>  其实我做该题的时候一直在<code>class_exists、sql_autoload_register</code>反复横跳，但是经过查看手册和思考发现<code>sql_autoload_register</code>无法加载<code>flag.php</code></p>
+<p>  我的目光又回到<code>class_exists</code>，但是无法绕过<code>class_exists</code>，经过长时间思考也得不到结果，后面上网查询发现可以利用<code>php</code>自带的类进行绕过并读取文件</p>
 <p>  我这里使用<a target="_blank" rel="noopener" href="https://www.php.net/manual/en/class.globiterator.php">GlobIterator</a>进行读取文件</p>
 <p><img src="https://s2.loli.net/2022/01/11/83FwsfVvTrUSgx6.png" alt="image-20220106060752971"></p>
 <p>  现在先写一下我们的<code>payload</code>，后续在解释<code>payload</code>各个参数的意思</p>
@@ -221,7 +228,7 @@
 </ul>
 <p><strong>读取文件</strong></p>
 <p>  这里我使用<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/splfileobject.construct.php">SplFileObject</a>原生类进行读取文件内容</p>
-<p><img src="C:/Users/lan/Documents/img/image-20220106062002972.png" alt="image-20220106062002972"></p>
+<p><img src="https://s2.loli.net/2022/01/11/SI41ZqQg9e6Rlop.png" alt="image-20220106062002972"></p>
 <p>  先写<code>payload</code>，后解释</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?name=<span class="built_in">SplFileObject</span>&amp;param=f1agi3hEre.php&amp;param2=r</span><br></pre></td></tr></table></figure>
 
@@ -234,12 +241,13 @@
 <li><p><code>f1agi3hEre.php</code>代表打开的文件</p>
 </li>
 <li><p><code>r</code>代表打开的方式(权限)</p>
-<p>  <strong>该题我觉得比较有意思，让我知道php的自带类也可以这么利用</strong></p>
+<p><strong>该题我觉得比较有意思，让我知道php的自带类也可以这么利用</strong></p>
 </li>
 </ul>
 <p>​          </p>
 <h2 id="Day4"><a href="#Day4" class="headerlink" title="Day4"></a>Day4</h2><p>  该题目代码有点多，不合适放到文章中，点击<a target="_blank" rel="noopener" href="https://github.com/hongriSec/PHP-Audit-Labs/tree/master/PHP-CTF-Docker/dockerfile_day3">链接</a>自行下载</p>
-<h3 id="解-3"><a href="#解-3" class="headerlink" title="解:"></a>解:</h3><p>  在看源码的时候我刚开始是怀疑存在<code>随机数</code>漏洞的，但是后来查阅PHP手册发现这几个函数不存在<code>随机数</code>漏洞。再然后我就把目光瞄到<code>session</code>上，后面看了一下代码，发现也没有相关漏洞，最后我看到对比的时候采用的是<code>==</code>，使用<code>==</code>会存在<code>弱对比</code>的情况，但是我测试时发现程序会将输入的值进行切片处理，没办法进行<code>弱对比</code>，后面发现是自己经验不足没想到使用<code>数组</code>类型输入来绕过切片处理</p>
+<h3 id="解-3"><a href="#解-3" class="headerlink" title="解:"></a>解:</h3><p>  在看源码的时候我刚开始是怀疑存在<code>随机数</code>漏洞的，但是后来查阅PHP手册发现这几个函数不存在<code>随机数</code>漏洞。</p>
+<p>  再然后我就把目光瞄到<code>session</code>上，后面看了一下代码，发现也没有相关漏洞，最后我看到对比的时候采用的是<code>==</code>，使用<code>==</code>会存在<code>弱对比</code>的情况，但是我测试时发现程序会将输入的值进行切片处理，没办法进行<code>弱对比</code>，后面发现是自己经验不足没想到使用<code>数组</code>类型输入来绕过切片处理</p>
 <p>  <code>弱对比</code>代码</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span>&lt;<span class="number">7</span>; <span class="variable">$i</span>++)&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="variable">$numbers</span>[<span class="variable">$i</span>] == <span class="variable">$win_numbers</span>[<span class="variable">$i</span>])&#123;</span><br><span class="line">		<span class="variable">$same_count</span>++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -421,7 +429,7 @@
 <p>  <code>-167</code>的16进制为<code>0xFF59</code></p>
 <p>  <code>php</code>中<code>chr函数</code>只能有<code>255</code>个字符输出，每当超出<code>255</code>个字符就开始循环输出</p>
 <p>  比如16进制<code>0xFF59</code>转为10进制<code>65369</code>除<code>255</code>剩余<code>89</code>，然后<code>ASCII</code>编码中<code>89</code>是大写<code>Y</code>所以输出了<code>Y</code></p>
-<p><img src="C:/Users/lan/Documents/img/image-20220109172543751.png" alt="image-20220109172543751"></p>
+<p><img src="https://s2.loli.net/2022/01/11/xDsameNY3MkyiwX.png" alt="image-20220109172543751"></p>
 <p><strong>异或</strong></p>
 <p>  异或运算也叫半加运算，其运算法相当不带进位的二进制加法</p>
 <ul>
@@ -448,7 +456,7 @@
 
 <p>  <img src="https://s2.loli.net/2022/01/11/q72dQiW5JDMhBUw.png" alt="image-20220109190602543"></p>
 <p>  第二题的多禁止一个<code>_</code>下划线，影响不大，使用<code>拉丁文绕过即可</code></p>
-<p><img src="C:/Users/lan/Documents/img/image-20220109191056735.png" alt="image-20220109191056735"></p>
+<p><img src="https://s2.loli.net/2022/01/11/pfhQLmtXinIc4b8.png" alt="image-20220109191056735"></p>
 <p>  <code>payload</code></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ö</span>=<span class="string">&quot;[[[=,![&quot;</span>^<span class="string">&quot;&lt;&gt;/&#123;@@&lt;&quot;</span>;<span class="variable">$ö</span>();</span><br></pre></td></tr></table></figure>
 
