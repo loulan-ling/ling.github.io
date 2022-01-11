@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
+    <meta name="description" content="PHP-Audit-Labs-CTF前言  目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP-Audit-Labs-CTF">
 <meta property="og:url" content="http://example.com/2022/01/11/PHP-Audit-Labs-CTF/index.html">
 <meta property="og:site_name" content="ling">
-<meta property="og:description" content="PHP-Audit-Labs-CTF前言目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml函数">
+<meta property="og:description" content="PHP-Audit-Labs-CTF前言  目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路 Day1Code  Github地址 解      id参数每次接收参数都会经过stop_hack函数进行过滤，但是过滤没有过滤干净，updatexml">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/9jzcxmK4FO8Eq6v.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/9qhGdvB8gr6ToJL.png">
@@ -39,9 +39,9 @@
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/pfhQLmtXinIc4b8.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/11/yLVFsCqpaxdz9RM.png">
 <meta property="article:published_time" content="2022-01-11T04:52:46.000Z">
-<meta property="article:modified_time" content="2022-01-11T05:08:21.908Z">
+<meta property="article:modified_time" content="2022-01-11T05:18:01.125Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="php">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.loli.net/2022/01/11/9jzcxmK4FO8Eq6v.png">
     
@@ -165,7 +165,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+        <a class="tag-link-link" href="/tags/php/" rel="tag">php</a>
     </div>
 
 
@@ -174,7 +174,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h1 id="PHP-Audit-Labs-CTF"><a href="#PHP-Audit-Labs-CTF" class="headerlink" title="PHP-Audit-Labs-CTF"></a>PHP-Audit-Labs-CTF</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路</p>
+    <h1 id="PHP-Audit-Labs-CTF"><a href="#PHP-Audit-Labs-CTF" class="headerlink" title="PHP-Audit-Labs-CTF"></a>PHP-Audit-Labs-CTF</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  目前只做到第8题，后续再把其他的题目一起做完，这个CTF对想学习代码审计的同学还是比较有帮助的。推荐想学代码审计的同学把这十几题CTF做完，建议先自己动手和自己想思路，实在没有思路或者做不出再看解题思路</p>
 <h2 id="Day1"><a href="#Day1" class="headerlink" title="Day1"></a>Day1</h2><h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h3><p>  <a target="_blank" rel="noopener" href="https://github.com/hongriSec/PHP-Audit-Labs/tree/master/PHP-CTF-Docker/dockerfile_day1/day1">Github地址</a></p>
 <h3 id="解"><a href="#解" class="headerlink" title="解"></a>解</h3><p>  <img src="https://s2.loli.net/2022/01/11/9jzcxmK4FO8Eq6v.png" alt="image-20220111002121397"></p>
 <p><img src="https://s2.loli.net/2022/01/11/9qhGdvB8gr6ToJL.png" alt="image-20220111002103498"></p>
@@ -522,7 +522,7 @@
     Copyright &copy;
     
     
-    2016-2022
+    2021-2022
     John Doe
   </div>
   <div class="footer-right">
