@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/ZRbqWo5y3O4KpS6.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/TVDXkwitLMzH943.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/BIc7wxTh5HrZMjf.png">
-<meta property="og:image" content="http://example.com/2022/01/28/HTB-Endgames-Xen/img/image-20220128025504783.png">
+<meta property="og:image" content="https://s2.loli.net/2022/01/28/B5vjrR9VmUsAX63.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/8gbicTPDStWzphJ.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/8iEzHIbYs4vDgwf.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/KpqbjweMYcQ6AiO.png">
@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/OguDaELIqrsiV9b.png">
 <meta property="og:image" content="https://s2.loli.net/2022/01/28/LhusVITo4E6yz2f.png">
 <meta property="article:published_time" content="2022-01-27T23:31:01.000Z">
-<meta property="article:modified_time" content="2022-01-27T23:40:19.265Z">
+<meta property="article:modified_time" content="2022-01-27T23:44:12.944Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="hackthebox">
 <meta name="twitter:card" content="summary">
@@ -251,9 +251,7 @@
 <p>  将<code>private.ppk</code>转成<code>id_rsa</code>格式</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">puttygen private.ppk -O private-openssh -o id_rsa</span><br></pre></td></tr></table></figure>
 
-
-
-<p><img src="img/image-20220128025504783.png" alt="image-20220128025504783"></p>
+<p><img src="https://s2.loli.net/2022/01/28/B5vjrR9VmUsAX63.png" alt="image-20220128025504783"></p>
 <p>  在尝试登录时，发现常用的账号都无法登录，还显示不是允许登录用户，在<code>citrix</code>产品文档查到他们使用的用户名是<code>nsroot</code>，同时还看到只要使用<code>shell</code>切换到<code>shell</code>模式</p>
 <p><img src="https://s2.loli.net/2022/01/28/8gbicTPDStWzphJ.png" alt="image-20220128031349313"></p>
 <p>  登录目录后发现有两个文件<code>capture.cap</code>、<code>capture.pcap</code>使用<code>scp</code>下载</p>
